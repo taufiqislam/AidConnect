@@ -1,0 +1,63 @@
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="10dp"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="4dp">
+
+    <!-- Horizontal layout to align details on the left and image on the right -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <!-- Details (Text and Button) on the left -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/campaignTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Campaign Title"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:id="@+id/campaignDeadline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Deadline: X days left"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:id="@+id/campaignDonors"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Donors: XXX"
+                android:layout_marginBottom="8dp"/>
+
+            <Button
+                android:id="@+id/campaignActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Donate Now"
+                android:layout_gravity="start"/>
+        </LinearLayout>
+
+        <!-- Image on the right -->
+        <ImageView
+            android:id="@+id/campaignImage"
+            android:layout_width="180dp"
+            android:layout_height="120dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/sample" /> <!-- Replace with your image -->
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

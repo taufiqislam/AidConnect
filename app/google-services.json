@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1005134660395",
+    "project_id": "aidconnect-c19c6",
+    "storage_bucket": "aidconnect-c19c6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1005134660395:android:c474985285111777a7fb6e",
+        "android_client_info": {
+          "package_name": "com.example.aidconnect"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTT9BZZKZmOA49Tlhbi9Xrclg9eHJVNy4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
