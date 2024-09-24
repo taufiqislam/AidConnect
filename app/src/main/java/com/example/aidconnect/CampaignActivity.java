@@ -22,7 +22,7 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CampaignActivity extends AppCompatActivity {
+public class CampaignActivity extends BaseActivity {
 
     TabLayout tabLayout;
     RecyclerView rvCampaigns;
@@ -36,7 +36,7 @@ public class CampaignActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_campaign);
-
+        setupDrawer();
 
 
         tabLayout = findViewById(R.id.tabLayout);
@@ -110,6 +110,11 @@ public class CampaignActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    protected String getUserName() {
+        // Return the actual user's name, if you have it from Firebase or other sources
+        return "Jane Doe"; // Replace with real user data
     }
 
     // Method to handle filter selection
