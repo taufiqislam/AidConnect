@@ -2,18 +2,19 @@ package com.example.aidconnect;
 
 public class Campaign {
     private String title;
+    private String Description;
     private int daysLeft;
     private int donorCount;
+    private int donationTarget;
+    private int currentDonation;
     private int image;
-    private String actionButtonText;
     private String category; // Newly Added, Popular, Urgency, Ending Soon
 
-    public Campaign(String title, int daysLeft, int donorCount, int image, String actionButtonText, String category) {
+    public Campaign(String title, int daysLeft, int donorCount, int image, String category) {
         this.title = title;
         this.daysLeft = daysLeft;
         this.donorCount = donorCount;
         this.image = image;
-        this.actionButtonText = actionButtonText;
         this.category = category;
     }
 
@@ -21,7 +22,6 @@ public class Campaign {
     public int getDaysLeft() { return daysLeft; }
     public int getDonorCount() { return donorCount; }
     public int getImage() { return image; }
-    public String getActionButtonText() { return actionButtonText; }
     public String getCategory() { return category; }
 }
 

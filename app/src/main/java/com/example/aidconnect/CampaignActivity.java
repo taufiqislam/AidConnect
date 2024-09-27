@@ -36,7 +36,14 @@ public class CampaignActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_campaign);
-        setupDrawer();
+
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser != null)
+        {
+            setupDrawer();
+        }
+
 
 
         tabLayout = findViewById(R.id.tabLayout);
@@ -44,10 +51,10 @@ public class CampaignActivity extends BaseActivity {
         rvCampaigns.setLayoutManager(new LinearLayoutManager(this));
 
         // Sample Data - Add categories to each campaign
-        allCampaigns.add(new Campaign("Flood at Feni", 5, 120, R.drawable.flood, "Donate Now", "Newly Added"));
-        allCampaigns.add(new Campaign("Build School", 12, 85, R.drawable.school, "Contribute", "Popular"));
-        allCampaigns.add(new Campaign("Forest Revival", 7, 200, R.drawable.forest, "Support", "Urgency"));
-        allCampaigns.add(new Campaign("Save Hameem", 3, 150, R.drawable.cancer, "Help Now", "Ending Soon"));
+        allCampaigns.add(new Campaign("Flood at Feni", 5, 120, R.drawable.flood, "Newly Added"));
+        allCampaigns.add(new Campaign("Build School", 12, 85, R.drawable.school,  "Popular"));
+        allCampaigns.add(new Campaign("Forest Revival", 7, 200, R.drawable.forest,  "Urgency"));
+        allCampaigns.add(new Campaign("Save Hameem", 3, 150, R.drawable.cancer,  "Ending Soon"));
 
         // Initially show all campaigns
         filteredCampaigns.addAll(allCampaigns);
@@ -91,9 +98,9 @@ public class CampaignActivity extends BaseActivity {
            }
         });
 
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
         Button signInButton = findViewById(R.id.btnSignIn);
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+
 
         if (currentUser != null) {
             // User is logged in, hide the sign in button
@@ -117,26 +124,7 @@ public class CampaignActivity extends BaseActivity {
         return "Jane Doe"; // Replace with real user data
     }
 
-    // Method to handle filter selection
-    private void onFilterSelected(TextView selectedFilter, String category) {
-        currentSelectedFilter = selectedFilter;
-        moveUnderline(currentSelectedFilter);  // Move underline to the selected tab
-        filterCampaigns(category);
-    }
 
-    // Method to move the underline to the selected tab
-    private void moveUnderline(TextView selectedFilter) {
-        selectedFilter.post(() -> {
-            // Get the X position and width of the selected tab
-            int underlineWidth = selectedFilter.getWidth();
-            int underlineX = selectedFilter.getLeft();
-
-            // Set the underline's width and position
-            underlineIndicator.getLayoutParams().width = underlineWidth;
-            underlineIndicator.setX(underlineX);
-            underlineIndicator.requestLayout(); // Apply the changes
-        });
-    }
 
     private void filterCampaigns(String category) {
         filteredCampaigns.clear(); // Clear the current list of displayed campaigns

@@ -32,7 +32,6 @@ public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.Campai
         holder.campaignTitle.setText(campaign.getTitle());
         holder.campaignDeadline.setText("Deadline: " + campaign.getDaysLeft() + " days left");
         holder.campaignDonors.setText("Donors: " + campaign.getDonorCount());
-        holder.campaignActionButton.setText(campaign.getActionButtonText());
         holder.campaignImage.setImageResource(campaign.getImage());  // Assuming image is a resource ID
     }
 
@@ -51,7 +50,6 @@ public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.Campai
             campaignTitle = itemView.findViewById(R.id.campaignTitle);
             campaignDeadline = itemView.findViewById(R.id.campaignDeadline);
             campaignDonors = itemView.findViewById(R.id.campaignDonors);
-            campaignActionButton = itemView.findViewById(R.id.campaignActionButton);
             campaignImage = itemView.findViewById(R.id.campaignImage);
         }
     }

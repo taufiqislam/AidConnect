@@ -13,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import androidx.appcompat.widget.Toolbar;
 
@@ -21,10 +23,16 @@ public class BaseActivity extends AppCompatActivity {
     protected DrawerLayout drawerLayout;
     protected NavigationView navigationView;
     private ActionBarDrawerToggle toggle;
+    private FirebaseAuth auth;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Initialize Firebase Auth and Firestore
+        auth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
     }
 
     // Set up the drawer and common actions for profile, settings, and logout
@@ -52,8 +60,13 @@ public class BaseActivity extends AppCompatActivity {
             Log.e("BaseActivity", "DrawerLayout is null! Check your layout file.");
         }
 
-        // Handle navigation item clicks (profile, settings, logout)
+        // Fetch and display user details in the navigation header
         if (navigationView != null) {
+            View headerView = navigationView.getHeaderView(0);
+            TextView tvUserName = headerView.findViewById(R.id.tvUserName);
+            setUserName(tvUserName);
+
+            // Handle navigation item clicks (profile, settings, logout)
             navigationView.setNavigationItemSelectedListener(item -> {
                 if(item.getItemId() == R.id.nav_profile)
                 {
@@ -73,24 +86,45 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
+    // Method to set the username in the navigation drawer header
+    private void setUserName(TextView tvUserName) {
+        // Get the current user's ID
+        String currentUserId = auth.getCurrentUser().getUid();
+
+        // Fetch user details from Firestore
+        db.collection("users").document(currentUserId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String firstName = documentSnapshot.getString("firstName");
+                        String lastName = documentSnapshot.getString("lastName");
+
+                        // Set the full name in the TextView
+                        tvUserName.setText(firstName + " " + lastName);
+                    } else {
+                        Log.e("BaseActivity", "User document does not exist");
+                        tvUserName.setText("Unknown User");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("BaseActivity", "Error fetching user details", e);
+                    tvUserName.setText("Error Loading User");
+                });
+    }
+
     // Common method to open profile
     protected void openProfile() {
-        // Handle the profile logic here, e.g., start the ProfileActivity
-        //Intent intent = new Intent(this, ProfileActivity.class);
-        //startActivity(intent);
+        Intent intent = new Intent(this, ProfileActivity.class);
+        startActivity(intent);
     }
 
     // Common method to open settings
     protected void openSettings() {
         // Handle the settings logic here, e.g., start the SettingsActivity
-        //Intent intent = new Intent(this, SettingsActivity.class);
-        //startActivity(intent);
     }
 
     // Common method to handle logout
     protected void logout() {
-        // Handle the logout logic, e.g., FirebaseAuth.getInstance().signOut();
-        // Redirect to login activity
         FirebaseAuth.getInstance().signOut();
         Intent intent = new Intent(this, CampaignActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
