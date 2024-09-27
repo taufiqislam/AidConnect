@@ -4,6 +4,12 @@
         android:id="@+id/nav_profile"
         android:title="Profile" />
     <item
+        android:id="@+id/nav_campaigns"
+        android:title="My Campaigns" />
+    <item
+        android:id="@+id/nav_donations"
+        android:title="My Donations" />
+    <item
         android:id="@+id/nav_settings"
         android:title="Settings" />
     <item
