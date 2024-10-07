@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Date;
 import java.util.List;
 
 public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.CampaignViewHolder> {
@@ -29,8 +30,11 @@ public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.Campai
     @Override
     public void onBindViewHolder(@NonNull CampaignViewHolder holder, int position) {
         Campaign campaign = campaignList.get(position);
+        Date deadline = campaign.getCampaignDeadline();
+        Date creationDate = campaign.getCampaignCreationDate();
+        int daysLeft = deadline.getDay() - creationDate.getDay();
         holder.campaignTitle.setText(campaign.getTitle());
-        holder.campaignDeadline.setText("Deadline: " + campaign.getDaysLeft() + " days left");
+        holder.campaignDeadline.setText("Deadline: " + (daysLeft) + " days left");
         holder.campaignDonors.setText("Donors: " + campaign.getDonorCount());
         holder.campaignImage.setImageResource(campaign.getImage());  // Assuming image is a resource ID
     }

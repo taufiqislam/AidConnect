@@ -21,6 +21,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class CampaignActivity extends BaseActivity {
@@ -54,10 +56,88 @@ public class CampaignActivity extends BaseActivity {
         rvCampaigns.setLayoutManager(new LinearLayoutManager(this));
 
         // Sample Data - Add categories to each campaign
-        allCampaigns.add(new Campaign("Flood at Feni", 5, 120, R.drawable.flood, "Newly Added"));
-        allCampaigns.add(new Campaign("Build School", 12, 85, R.drawable.school,  "Popular"));
-        allCampaigns.add(new Campaign("Forest Revival", 7, 200, R.drawable.forest,  "Urgency"));
-        allCampaigns.add(new Campaign("Save Hameem", 3, 150, R.drawable.cancer,  "Ending Soon"));
+//        allCampaigns.add(new Campaign("Flood at Feni", 5, 120, R.drawable.flood, "Newly Added"));
+//        allCampaigns.add(new Campaign("Build School", 12, 85, R.drawable.school,  "Popular"));
+//        allCampaigns.add(new Campaign("Forest Revival", 7, 200, R.drawable.forest,  "Urgency"));
+//        allCampaigns.add(new Campaign("Save Hameem", 3, 150, R.drawable.cancer,  "Ending Soon"));
+
+        // Create a Calendar instance to set campaign creation date and deadline
+        Calendar calendar = Calendar.getInstance();
+
+        // Set campaign creation date (e.g., today)
+        Date creationDate = calendar.getTime();
+
+        // Set campaign deadline (e.g., 30 days from today)
+        calendar.add(Calendar.DAY_OF_YEAR, 30);
+        Date deadline = calendar.getTime();
+
+        // Add a campaign with updated constructor
+        allCampaigns.add(new Campaign(
+                "Build School",               // title
+                "Help build a school in rural areas", // description
+                creationDate,                 // campaign creation date
+                deadline,                     // campaign deadline
+                100000,                       // donation target (in currency units)
+                R.drawable.school,            // image resource ID
+                "Urgency",                    // category (e.g., Popular, Urgency, etc.)
+                "w8gxD3Qpi0acrZkdSOCozk1aoaN2" // creator ID (user ID)
+        ));
+
+        // Add another campaign (dummy data)
+        calendar = Calendar.getInstance();  // Reset calendar for new date
+        creationDate = calendar.getTime();
+        calendar.add(Calendar.DAY_OF_YEAR, 15);  // Campaign ends in 15 days
+        deadline = calendar.getTime();
+
+        allCampaigns.add(new Campaign(
+                "Flood at Feni",     // title
+                "Save the people of Feni from massive flooding", // description
+                creationDate,                 // campaign creation date
+                deadline,                     // campaign deadline
+                50000,                        // donation target
+                R.drawable.flood,             // image resource ID
+                "Popular",                    // category
+                "w8gxD3Qpi0acrZkdSOCozk1aoaN2" // creator ID (same user)
+        ));
+
+        // Set campaign creation date (e.g., 7 days ago for "Forest Revival")
+        calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, -7);  // Campaign started 7 days ago
+        Date forestCreationDate = calendar.getTime();
+        calendar.add(Calendar.DAY_OF_YEAR, 7);   // Campaign will end in 7 days
+        Date forestDeadline = calendar.getTime();
+
+// Add "Forest Revival" campaign with updated constructor
+        allCampaigns.add(new Campaign(
+                "Forest Revival",                 // title
+                "Help restore deforested lands in critical regions", // description
+                forestCreationDate,               // campaign creation date
+                forestDeadline,                   // campaign deadline (7 days left)
+                200000,                           // donation target
+                R.drawable.forest,                // image resource ID
+                "Urgency",                        // category
+                "w8gxD3Qpi0acrZkdSOCozk1aoaN2"    // creator ID
+        ));
+
+// Set campaign creation date (e.g., 27 days ago for "Save Hameem")
+        calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, -27);  // Campaign started 27 days ago
+        Date hameemCreationDate = calendar.getTime();
+        calendar.add(Calendar.DAY_OF_YEAR, 3);    // Campaign will end in 3 days
+        Date hameemDeadline = calendar.getTime();
+
+// Add "Save Hameem" campaign with updated constructor
+        allCampaigns.add(new Campaign(
+                "Save Hameem",                    // title
+                "Raise funds for Hameem's cancer treatment", // description
+                hameemCreationDate,               // campaign creation date
+                hameemDeadline,                   // campaign deadline (3 days left)
+                150000,                           // donation target
+                R.drawable.cancer,                // image resource ID
+                "Ending Soon",                    // category
+                "w8gxD3Qpi0acrZkdSOCozk1aoaN2"    // creator ID
+        ));
+
 
         // Initially show all campaigns
         filteredCampaigns.addAll(allCampaigns);
