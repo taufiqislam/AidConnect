@@ -9,6 +9,8 @@ public class Donation {
     private Timestamp donationTime;
     private String transactionId;
 
+    public Donation() {}
+
     public Donation(String donorId, String campaignId, int donationAmount, Timestamp donationTime, String transactionId)
     {
         this.donorId = donorId;

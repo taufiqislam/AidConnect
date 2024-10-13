@@ -22,6 +22,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -32,8 +33,10 @@ public class CampaignActivity extends BaseActivity {
     CampaignAdapter campaignAdapter;
     List<Campaign> allCampaigns = new ArrayList<>();
     List<Campaign> filteredCampaigns = new ArrayList<>();
+    List<String> campaignIds = new ArrayList<>();
     TextView currentSelectedFilter;
     View underlineIndicator;
+    String userId;
 
 
 
@@ -55,12 +58,6 @@ public class CampaignActivity extends BaseActivity {
         rvCampaigns = findViewById(R.id.rvCampaigns);
         rvCampaigns.setLayoutManager(new LinearLayoutManager(this));
 
-        // Sample Data - Add categories to each campaign
-//        allCampaigns.add(new Campaign("Flood at Feni", 5, 120, R.drawable.flood, "Newly Added"));
-//        allCampaigns.add(new Campaign("Build School", 12, 85, R.drawable.school,  "Popular"));
-//        allCampaigns.add(new Campaign("Forest Revival", 7, 200, R.drawable.forest,  "Urgency"));
-//        allCampaigns.add(new Campaign("Save Hameem", 3, 150, R.drawable.cancer,  "Ending Soon"));
-
         // Create a Calendar instance to set campaign creation date and deadline
         Calendar calendar = Calendar.getInstance();
 
@@ -71,6 +68,7 @@ public class CampaignActivity extends BaseActivity {
         calendar.add(Calendar.DAY_OF_YEAR, 30);
         Date deadline = calendar.getTime();
 
+
         // Add a campaign with updated constructor
         allCampaigns.add(new Campaign(
                 "Build School",               // title
@@ -79,9 +77,10 @@ public class CampaignActivity extends BaseActivity {
                 deadline,                     // campaign deadline
                 100000,                       // donation target (in currency units)
                 R.drawable.school,            // image resource ID
-                "Urgency",                    // category (e.g., Popular, Urgency, etc.)
+                "Newly Added",                    // category (e.g., Popular, Urgency, etc.)
                 "w8gxD3Qpi0acrZkdSOCozk1aoaN2" // creator ID (user ID)
         ));
+        campaignIds.add("number1");
 
         // Add another campaign (dummy data)
         calendar = Calendar.getInstance();  // Reset calendar for new date
@@ -99,6 +98,7 @@ public class CampaignActivity extends BaseActivity {
                 "Popular",                    // category
                 "w8gxD3Qpi0acrZkdSOCozk1aoaN2" // creator ID (same user)
         ));
+        campaignIds.add("number2");
 
         // Set campaign creation date (e.g., 7 days ago for "Forest Revival")
         calendar = Calendar.getInstance();
@@ -115,9 +115,10 @@ public class CampaignActivity extends BaseActivity {
                 forestDeadline,                   // campaign deadline (7 days left)
                 200000,                           // donation target
                 R.drawable.forest,                // image resource ID
-                "Urgency",                        // category
+                "Newly Added",                        // category
                 "w8gxD3Qpi0acrZkdSOCozk1aoaN2"    // creator ID
         ));
+        campaignIds.add("number3");
 
 // Set campaign creation date (e.g., 27 days ago for "Save Hameem")
         calendar = Calendar.getInstance();
@@ -137,49 +138,51 @@ public class CampaignActivity extends BaseActivity {
                 "Ending Soon",                    // category
                 "w8gxD3Qpi0acrZkdSOCozk1aoaN2"    // creator ID
         ));
+        campaignIds.add("number4");
 
 
         // Initially show all campaigns
         filteredCampaigns.addAll(allCampaigns);
-        campaignAdapter = new CampaignAdapter(filteredCampaigns);
+        campaignAdapter = new CampaignAdapter(filteredCampaigns,campaignIds,this);
         rvCampaigns.setAdapter(campaignAdapter);
 
         // Add tabs to the TabLayout
         tabLayout.addTab(tabLayout.newTab().setText("Newly Added"));
         tabLayout.addTab(tabLayout.newTab().setText("Popular"));
-        tabLayout.addTab(tabLayout.newTab().setText("Urgency"));
         tabLayout.addTab(tabLayout.newTab().setText("Ending Soon"));
 
         // Set up tab selection listener
+        // Set up tab selection listener with sorting algorithms
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-           @Override
-           public void onTabSelected(TabLayout.Tab tab) {
-               switch (tab.getPosition()) {
-                   case 0:
-                       filterCampaigns("Newly Added");
-                       break;
-                   case 1:
-                       filterCampaigns("Popular");
-                       break;
-                   case 2:
-                       filterCampaigns("Urgency");
-                       break;
-                   case 3:
-                       filterCampaigns("Ending Soon");
-                       break;
-               }
-           }
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                switch (tab.getPosition()) {
+                    case 0:
+                        // Newly Added: Sort by creation date (most recent first)
+                        sortCampaignsByCreationDate();
+                        break;
+                    case 1:
+                        // Popular: Sort by donor count (descending)
+                        sortCampaignsByDonorCount();
+                        break;
+                    case 2:
+                        // Ending Soon: Sort by deadline (ascending)
+                        sortCampaignsByDeadline();
+                        break;
+                }
+            }
 
-           @Override
-           public void onTabUnselected(TabLayout.Tab tab) {
-               // Do nothing
-           }
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                // Do nothing
+            }
 
-           @Override
-           public void onTabReselected(TabLayout.Tab tab) {
-               // Do nothing
-           }
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                // Do nothing
+            }
         });
+
 
 
         Button signInButton = findViewById(R.id.btnSignIn);
@@ -202,23 +205,30 @@ public class CampaignActivity extends BaseActivity {
 
     }
 
-    protected String getUserName() {
-        // Return the actual user's name, if you have it from Firebase or other sources
-        return "Jane Doe"; // Replace with real user data
-    }
 
 
-
-    private void filterCampaigns(String category) {
-        filteredCampaigns.clear(); // Clear the current list of displayed campaigns
-
-        for (Campaign campaign : allCampaigns) {
-            if (campaign.getCategory().equals(category)) {
-                filteredCampaigns.add(campaign); // Add campaigns that match the selected category
-            }
-        }
-
-        // Notify the adapter that the data has changed
+    // Sorting method for popular campaigns (by donor count)
+    private void sortCampaignsByDonorCount() {
+        filteredCampaigns.clear();
+        filteredCampaigns.addAll(allCampaigns);
+        Collections.sort(filteredCampaigns, (c1, c2) -> Integer.compare(c2.getDonorCount(), c1.getDonorCount()));
         campaignAdapter.notifyDataSetChanged();
     }
+
+    // Sorting method for newly added campaigns (by creation date)
+    private void sortCampaignsByCreationDate() {
+        filteredCampaigns.clear();
+        filteredCampaigns.addAll(allCampaigns);
+        Collections.sort(filteredCampaigns, (c1, c2) -> c2.getCampaignCreationDate().compareTo(c1.getCampaignCreationDate()));
+        campaignAdapter.notifyDataSetChanged();
+    }
+
+    // Sorting method for ending soon campaigns (by deadline)
+    private void sortCampaignsByDeadline() {
+        filteredCampaigns.clear();
+        filteredCampaigns.addAll(allCampaigns);
+        Collections.sort(filteredCampaigns, (c1, c2) -> c2.getCampaignDeadline().compareTo(c1.getCampaignDeadline()));
+        campaignAdapter.notifyDataSetChanged();
+    }
+
 }

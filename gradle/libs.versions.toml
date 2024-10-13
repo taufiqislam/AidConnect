@@ -1,4 +1,5 @@
 [versions]
+aamarpayAndroidLibrary = "1.1"
 agp = "8.5.2"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -12,6 +13,7 @@ firebaseAuth = "23.0.0"
 firebaseFirestore = "25.1.0"
 
 [libraries]
+aamarpay-android-library = { module = "com.github.aamarpay-dev:aamarPay-Android-Library", version.ref = "aamarpayAndroidLibrary" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
