@@ -83,9 +83,10 @@ public class CampaignActivity extends BaseActivity {
         campaignIds.add("number1");
 
         // Add another campaign (dummy data)
-        calendar = Calendar.getInstance();  // Reset calendar for new date
+        calendar = Calendar.getInstance();
         creationDate = calendar.getTime();
-        calendar.add(Calendar.DAY_OF_YEAR, 15);  // Campaign ends in 15 days
+        calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, 15);  // Campaign will end in 3 days
         deadline = calendar.getTime();
 
         allCampaigns.add(new Campaign(
@@ -102,9 +103,10 @@ public class CampaignActivity extends BaseActivity {
 
         // Set campaign creation date (e.g., 7 days ago for "Forest Revival")
         calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_YEAR, -7);  // Campaign started 7 days ago
+        calendar.add(Calendar.DAY_OF_YEAR, -7);
         Date forestCreationDate = calendar.getTime();
-        calendar.add(Calendar.DAY_OF_YEAR, 7);   // Campaign will end in 7 days
+        calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, 7);  // Campaign will end in 3 days
         Date forestDeadline = calendar.getTime();
 
 // Add "Forest Revival" campaign with updated constructor
@@ -121,11 +123,14 @@ public class CampaignActivity extends BaseActivity {
         campaignIds.add("number3");
 
 // Set campaign creation date (e.g., 27 days ago for "Save Hameem")
+        // Set creation date 27 days ago
         calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_YEAR, -27);  // Campaign started 27 days ago
+        calendar.add(Calendar.DAY_OF_YEAR, -27);
         Date hameemCreationDate = calendar.getTime();
-        calendar.add(Calendar.DAY_OF_YEAR, 3);    // Campaign will end in 3 days
+        calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, 3);  // Campaign will end in 3 days
         Date hameemDeadline = calendar.getTime();
+
 
 // Add "Save Hameem" campaign with updated constructor
         allCampaigns.add(new Campaign(
@@ -227,7 +232,7 @@ public class CampaignActivity extends BaseActivity {
     private void sortCampaignsByDeadline() {
         filteredCampaigns.clear();
         filteredCampaigns.addAll(allCampaigns);
-        Collections.sort(filteredCampaigns, (c1, c2) -> c2.getCampaignDeadline().compareTo(c1.getCampaignDeadline()));
+        Collections.sort(filteredCampaigns, (c1, c2) -> c1.getCampaignDeadline().compareTo(c2.getCampaignDeadline()));
         campaignAdapter.notifyDataSetChanged();
     }
 

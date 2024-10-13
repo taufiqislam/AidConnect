@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.CampaignViewHolder> {
     private List<Campaign> campaignList;
@@ -39,24 +40,26 @@ public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.Campai
         String campaignId = campaignIds.get(position);
         Date deadline = campaign.getCampaignDeadline();
         Date creationDate = campaign.getCampaignCreationDate();
-        int daysLeft = deadline.getDay() - creationDate.getDay();
+
+        // Correct way to calculate the days left between the deadline and creation date
+        long diffInMillis = deadline.getTime() - new Date().getTime(); // Get difference in milliseconds from today
+        long daysLeft = TimeUnit.MILLISECONDS.toDays(diffInMillis); // Convert milliseconds to days
+
+        // Set data to UI elements
         holder.campaignTitle.setText(campaign.getTitle());
-        holder.campaignDeadline.setText("Deadline: " + (daysLeft) + " days left");
+        holder.campaignDeadline.setText("Deadline: " + daysLeft + " days left");
         holder.campaignDonors.setText("Donors: " + campaign.getDonorCount());
-        holder.campaignImage.setImageResource(campaign.getImage());  // Assuming image is a resource ID
+        holder.campaignImage.setImageResource(campaign.getImage());
 
+        // Action button for donations
         holder.campaignActionButton.setOnClickListener(v -> {
-            // Create an Intent to navigate to DonationActivity
             Intent intent = new Intent(context, DonationActivity.class);
-
-            // Pass relevant data to DonationActivity (like campaignId, title, etc.)
             intent.putExtra("campaignId", campaignId);
             intent.putExtra("campaignTitle", campaign.getTitle());
-
-            // Start the DonationActivity
             context.startActivity(intent);
         });
     }
+
 
     @Override
     public int getItemCount() {
