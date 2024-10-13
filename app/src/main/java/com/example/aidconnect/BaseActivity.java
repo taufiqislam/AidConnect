@@ -72,6 +72,10 @@ public class BaseActivity extends AppCompatActivity {
                 {
                     openProfile();
                 }
+                else if(item.getItemId() == R.id.nav_donations)
+                {
+                    openDonations();
+                }
                 else if(item.getItemId() == R.id.nav_settings)
                 {
                     openSettings();
@@ -85,6 +89,8 @@ public class BaseActivity extends AppCompatActivity {
             });
         }
     }
+
+
 
     // Method to set the username in the navigation drawer header
     private void setUserName(TextView tvUserName) {
@@ -115,6 +121,11 @@ public class BaseActivity extends AppCompatActivity {
     // Common method to open profile
     protected void openProfile() {
         Intent intent = new Intent(this, ProfileActivity.class);
+        startActivity(intent);
+    }
+
+    private void openDonations() {
+        Intent intent = new Intent(this, MyDonationsActivity.class);
         startActivity(intent);
     }
 
