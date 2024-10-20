@@ -1,8 +1,9 @@
 package com.example.aidconnect;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Campaign {
+public class Campaign implements Serializable {
     private String title;
     private String description;
     private Date campaignCreationDate;
@@ -21,9 +22,9 @@ public class Campaign {
         this.description = description;
         this.campaignCreationDate = campaignCreationDate;
         this.campaignDeadline = campaignDeadline;
-        this.donorCount = 0;  // Initialized to 0 when a campaign is created
+        this.donorCount = 45;  // Initialized to 0 when a campaign is created
         this.donationTarget = donationTarget;
-        this.currentDonation = 0;  // Starts with 0 donations
+        this.currentDonation = 1000;  // Starts with 0 donations
         this.image = image;
         this.category = category;
         this.creatorId = creatorId;
