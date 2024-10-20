@@ -39,11 +39,8 @@ public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.Campai
         Campaign campaign = campaignList.get(position);
         String campaignId = campaignIds.get(position);
         Date deadline = campaign.getCampaignDeadline();
-        Date creationDate = campaign.getCampaignCreationDate();
 
-        // Correct way to calculate the days left between the deadline and creation date
-        long diffInMillis = deadline.getTime() - new Date().getTime(); // Get difference in milliseconds from today
-        long daysLeft = TimeUnit.MILLISECONDS.toDays(diffInMillis); // Convert milliseconds to days
+        long daysLeft = getDaysLeft(deadline);
 
         // Set data to UI elements
         holder.campaignTitle.setText(campaign.getTitle());
@@ -58,6 +55,25 @@ public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.Campai
             intent.putExtra("campaignTitle", campaign.getTitle());
             context.startActivity(intent);
         });
+
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, CampaignDetailsActivity.class);
+            intent.putExtra("campaign", campaign);
+            intent.putExtra("campaignId", campaignId);
+            intent.putExtra("campaignTitle", campaign.getTitle());
+            intent.putExtra("campaignDescription", campaign.getDescription());
+            intent.putExtra("campaignDetails", "Donation Target: " + campaign.getDonationTarget() +
+                    "\nCurrent Donation: " + campaign.getCurrentDonation() +
+                    "\nDays Left: " + getDaysLeft(campaign.getCampaignDeadline())); // example detail
+            intent.putExtra("campaignCreatorId", campaign.getCreatorId());
+            intent.putExtra("campaignImage", campaign.getImage());  // Pass image resource ID
+            context.startActivity(intent);
+        });
+    }
+
+    private long getDaysLeft(Date deadline) {
+        long diffInMillis = deadline.getTime() - new Date().getTime(); // Get the difference in milliseconds
+        return TimeUnit.MILLISECONDS.toDays(diffInMillis); // Convert milliseconds to days
     }
 
 
