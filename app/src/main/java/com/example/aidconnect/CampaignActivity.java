@@ -14,6 +14,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.Timestamp;
@@ -207,7 +208,15 @@ public class CampaignActivity extends BaseActivity {
             });
         }
 
+        FloatingActionButton addCampaignButton = findViewById(R.id.addCampaignButton);
 
+        addCampaignButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(CampaignActivity.this, CreateCampaignActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
 

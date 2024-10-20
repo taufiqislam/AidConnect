@@ -2,4 +2,18 @@
     <string name="app_name">AidConnect</string>
     <string name="open">Open Drawer</string>
     <string name="close">Close Drawer</string>
+
+    <string-array name="campaign_categories">
+        <item>Health</item>
+        <item>Charity</item>
+        <item>Natural Disasters</item>
+        <item>Others</item>
+    </string-array>
+
+    <string-array name="donation_mediums">
+        <item>None</item>
+        <item>Bkash</item>
+        <item>Nagad</item>
+        <item>Debit card</item>
+    </string-array>
 </resources>
