@@ -1,6 +1,8 @@
 [versions]
 aamarpayAndroidLibrary = "1.1"
 agp = "8.5.2"
+firebaseStorageVersion = "20.2.1"
+glide = "4.15.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
@@ -16,6 +18,8 @@ firebaseStorage = "21.0.1"
 
 [libraries]
 aamarpay-android-library = { module = "com.github.aamarpay-dev:aamarPay-Android-Library", version.ref = "aamarpayAndroidLibrary" }
+firebase-storage-v2021 = { module = "com.google.firebase:firebase-storage", version.ref = "firebaseStorageVersion" }
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

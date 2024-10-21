@@ -2,6 +2,7 @@ package com.example.aidconnect;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Map;
 
 public class Campaign implements Serializable {
     private String title;
@@ -14,23 +15,44 @@ public class Campaign implements Serializable {
     private int image;  // Image resource or URL
     private String category;  // Newly Added, Popular, Urgency, Ending Soon
     private String creatorId;  // Foreign key linking to the creator (user)
+    private Map<String, String> paymentMethods; // Map to hold payment method and number
+    private String imageUrl;
 
-    // Constructor
+    public Campaign() {
+        // This constructor is needed by Firestore for deserialization
+    }
+
+    // Constructor with payment methods
     public Campaign(String title, String description, Date campaignCreationDate, Date campaignDeadline,
-                    int donationTarget, int image, String category, String creatorId) {
+                    int donationTarget, int image, String category, String creatorId, Map<String, String> paymentMethods, String imageUrl) {
         this.title = title;
         this.description = description;
         this.campaignCreationDate = campaignCreationDate;
         this.campaignDeadline = campaignDeadline;
-        this.donorCount = 45;  // Initialized to 0 when a campaign is created
+        this.donorCount = 0;
         this.donationTarget = donationTarget;
-        this.currentDonation = 1000;  // Starts with 0 donations
+        this.currentDonation = 0;
         this.image = image;
         this.category = category;
         this.creatorId = creatorId;
+        this.paymentMethods = paymentMethods;
+        this.imageUrl = imageUrl;
+    }
+
+    // Getters and setters for all fields including payment methods
+    public Map<String, String> getPaymentMethods() {
+        return paymentMethods;
+    }
+
+    public void setPaymentMethods(Map<String, String> paymentMethods) {
+        this.paymentMethods = paymentMethods;
     }
 
     // Getters and Setters
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
 
     public String getTitle() {
         return title;

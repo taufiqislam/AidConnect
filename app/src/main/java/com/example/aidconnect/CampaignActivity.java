@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,6 +28,10 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
 public class CampaignActivity extends BaseActivity {
 
     TabLayout tabLayout;
@@ -34,12 +39,9 @@ public class CampaignActivity extends BaseActivity {
     CampaignAdapter campaignAdapter;
     List<Campaign> allCampaigns = new ArrayList<>();
     List<Campaign> filteredCampaigns = new ArrayList<>();
+    FirebaseFirestore db;
     List<String> campaignIds = new ArrayList<>();
-    TextView currentSelectedFilter;
     View underlineIndicator;
-    String userId;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,160 +50,54 @@ public class CampaignActivity extends BaseActivity {
 
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null)
-        {
+        if (currentUser != null) {
             setupDrawer();
         }
 
-
+        // Initialize Firestore
+        db = FirebaseFirestore.getInstance();
 
         tabLayout = findViewById(R.id.tabLayout);
         rvCampaigns = findViewById(R.id.rvCampaigns);
         rvCampaigns.setLayoutManager(new LinearLayoutManager(this));
 
-        // Create a Calendar instance to set campaign creation date and deadline
-        Calendar calendar = Calendar.getInstance();
+        // Fetch campaigns from Firestore
+        fetchCampaignsFromFirestore();
 
-        // Set campaign creation date (e.g., today)
-        Date creationDate = calendar.getTime();
-
-        // Set campaign deadline (e.g., 30 days from today)
-        calendar.add(Calendar.DAY_OF_YEAR, 30);
-        Date deadline = calendar.getTime();
-
-
-        // Add a campaign with updated constructor
-        allCampaigns.add(new Campaign(
-                "Build School",               // title
-                "Help build a school in rural areas", // description
-                creationDate,                 // campaign creation date
-                deadline,                     // campaign deadline
-                100000,                       // donation target (in currency units)
-                R.drawable.school,            // image resource ID
-                "Newly Added",                    // category (e.g., Popular, Urgency, etc.)
-                "w8gxD3Qpi0acrZkdSOCozk1aoaN2" // creator ID (user ID)
-        ));
-        campaignIds.add("number1");
-
-        // Add another campaign (dummy data)
-        calendar = Calendar.getInstance();
-        creationDate = calendar.getTime();
-        calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_YEAR, 15);  // Campaign will end in 3 days
-        deadline = calendar.getTime();
-
-        allCampaigns.add(new Campaign(
-                "Flood at Feni",     // title
-                "Save the people of Feni from massive flooding", // description
-                creationDate,                 // campaign creation date
-                deadline,                     // campaign deadline
-                50000,                        // donation target
-                R.drawable.flood,             // image resource ID
-                "Popular",                    // category
-                "w8gxD3Qpi0acrZkdSOCozk1aoaN2" // creator ID (same user)
-        ));
-        campaignIds.add("number2");
-
-        // Set campaign creation date (e.g., 7 days ago for "Forest Revival")
-        calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_YEAR, -7);
-        Date forestCreationDate = calendar.getTime();
-        calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_YEAR, 7);  // Campaign will end in 3 days
-        Date forestDeadline = calendar.getTime();
-
-// Add "Forest Revival" campaign with updated constructor
-        allCampaigns.add(new Campaign(
-                "Forest Revival",                 // title
-                "Help restore deforested lands in critical regions", // description
-                forestCreationDate,               // campaign creation date
-                forestDeadline,                   // campaign deadline (7 days left)
-                200000,                           // donation target
-                R.drawable.forest,                // image resource ID
-                "Newly Added",                        // category
-                "w8gxD3Qpi0acrZkdSOCozk1aoaN2"    // creator ID
-        ));
-        campaignIds.add("number3");
-
-// Set campaign creation date (e.g., 27 days ago for "Save Hameem")
-        // Set creation date 27 days ago
-        calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_YEAR, -27);
-        Date hameemCreationDate = calendar.getTime();
-        calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_YEAR, 3);  // Campaign will end in 3 days
-        Date hameemDeadline = calendar.getTime();
-
-
-// Add "Save Hameem" campaign with updated constructor
-        allCampaigns.add(new Campaign(
-                "Save Hameem",                    // title
-                "Raise funds for Hameem's cancer treatment", // description
-                hameemCreationDate,               // campaign creation date
-                hameemDeadline,                   // campaign deadline (3 days left)
-                150000,                           // donation target
-                R.drawable.cancer,                // image resource ID
-                "Ending Soon",                    // category
-                "w8gxD3Qpi0acrZkdSOCozk1aoaN2"    // creator ID
-        ));
-        campaignIds.add("number4");
-
-
-        // Initially show all campaigns
-        filteredCampaigns.addAll(allCampaigns);
-        campaignAdapter = new CampaignAdapter(filteredCampaigns,campaignIds,this);
-        rvCampaigns.setAdapter(campaignAdapter);
-
-        // Add tabs to the TabLayout
+        // Setup tab layout
         tabLayout.addTab(tabLayout.newTab().setText("Newly Added"));
         tabLayout.addTab(tabLayout.newTab().setText("Popular"));
         tabLayout.addTab(tabLayout.newTab().setText("Ending Soon"));
 
         // Set up tab selection listener
-        // Set up tab selection listener with sorting algorithms
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
                     case 0:
-                        // Newly Added: Sort by creation date (most recent first)
-                        sortCampaignsByCreationDate();
+                        sortCampaignsByCreationDate(); // Newly added
                         break;
                     case 1:
-                        // Popular: Sort by donor count (descending)
-                        sortCampaignsByDonorCount();
+                        sortCampaignsByDonorCount(); // Popular
                         break;
                     case 2:
-                        // Ending Soon: Sort by deadline (ascending)
-                        sortCampaignsByDeadline();
+                        sortCampaignsByDeadline(); // Ending soon
                         break;
                 }
             }
 
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-                // Do nothing
-            }
+            public void onTabUnselected(TabLayout.Tab tab) {}
 
             @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-                // Do nothing
-            }
+            public void onTabReselected(TabLayout.Tab tab) {}
         });
 
-
-
         Button signInButton = findViewById(R.id.btnSignIn);
-
-
         if (currentUser != null) {
-            // User is logged in, hide the sign in button
             signInButton.setVisibility(View.GONE);
         } else {
-            // User is not logged in, show the sign in button
             signInButton.setVisibility(View.VISIBLE);
-
-            // Set up the Sign In button click listener
             signInButton.setOnClickListener(v -> {
                 Intent intent = new Intent(CampaignActivity.this, LoginActivity.class);
                 startActivity(intent);
@@ -209,17 +105,37 @@ public class CampaignActivity extends BaseActivity {
         }
 
         FloatingActionButton addCampaignButton = findViewById(R.id.addCampaignButton);
-
-        addCampaignButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(CampaignActivity.this, CreateCampaignActivity.class);
-                startActivity(intent);
-            }
+        addCampaignButton.setOnClickListener(v -> {
+            Intent intent = new Intent(CampaignActivity.this, CreateCampaignActivity.class);
+            startActivity(intent);
         });
     }
 
+    // Fetch campaigns from Firestore
+    private void fetchCampaignsFromFirestore() {
+        CollectionReference campaignsRef = db.collection("campaigns");
 
+        campaignsRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                allCampaigns.clear(); // Clear previous data
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    // Convert Firestore document to Campaign object
+                    Campaign campaign = document.toObject(Campaign.class);
+                    String campaignId = document.getId();
+
+                    // Add campaign to list
+                    allCampaigns.add(campaign);
+                    campaignIds.add(campaignId);
+                }
+                // Initially show all campaigns
+                filteredCampaigns.addAll(allCampaigns);
+                campaignAdapter = new CampaignAdapter(filteredCampaigns, campaignIds, this);
+                rvCampaigns.setAdapter(campaignAdapter);
+            } else {
+                Toast.makeText(CampaignActivity.this, "Error getting campaigns", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     // Sorting method for popular campaigns (by donor count)
     private void sortCampaignsByDonorCount() {
@@ -244,5 +160,4 @@ public class CampaignActivity extends BaseActivity {
         Collections.sort(filteredCampaigns, (c1, c2) -> c1.getCampaignDeadline().compareTo(c2.getCampaignDeadline()));
         campaignAdapter.notifyDataSetChanged();
     }
-
 }
