@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,8 +17,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class RegistrationActivity extends AppCompatActivity {
 
-    private EditText firstNameInput, lastNameInput, emailInput, passwordInput, phoneInput, ageInput, genderInput;
-    private Button registerButton;
+    private EditText firstNameInput, lastNameInput, emailInput, passwordInput, phoneInput;
     private ProgressBar progressBar;
 
     private FirebaseAuth auth;
@@ -38,11 +38,15 @@ public class RegistrationActivity extends AppCompatActivity {
         emailInput = findViewById(R.id.inputEmail);
         passwordInput = findViewById(R.id.inputPassword);
         phoneInput = findViewById(R.id.inputPhone);
-        registerButton = findViewById(R.id.btnRegister);
+        Button registerButton = findViewById(R.id.btnRegister);
         progressBar = findViewById(R.id.progressBar);
-
+        TextView signInTextView = findViewById(R.id.loginTextView);
         // Set button click listener
         registerButton.setOnClickListener(v -> registerUser());
+
+        signInTextView.setOnClickListener(v -> {
+            startActivity(new Intent(RegistrationActivity.this, LoginActivity.class));
+        });
     }
 
     private void registerUser() {

@@ -1,10 +1,11 @@
 package com.example.aidconnect;
 
-import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -13,155 +14,228 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class CreateCampaignActivity extends AppCompatActivity {
 
+    private static final int PICK_IMAGE_REQUEST = 1;
+
     private EditText etTitle, etDescription, etDeadline, etDonationTarget, etDonationNumber;
     private Spinner spCategory, spDonationMedium;
-    private Button btnUploadImage, btnCreateCampaign;
     private ImageView ivSelectedImage;
-    private Uri imageUri;
-
-    private FirebaseAuth auth;
+    private Button btnCreateCampaign, btnUploadImage;
     private FirebaseFirestore db;
-    //private StorageReference storageRef;
+    private FirebaseAuth mAuth;
+    private String selectedCategory = "";
+    private Map<String, String> paymentMethods = new HashMap<>();
+    private Uri imageUri;  // To store the image URI for later use
+    private FirebaseStorage storage;
 
-//    @SuppressLint("MissingInflatedId")
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_campaign);
 
-        // Initialize Firebase instances
-//        auth = FirebaseAuth.getInstance();
-//        db = FirebaseFirestore.getInstance();
-//        storageRef = FirebaseStorage.getInstance().getReference("campaign_images");
-
-        // Initialize UI elements
+        // Initialize views
         etTitle = findViewById(R.id.etTitle);
         etDescription = findViewById(R.id.etDescription);
         etDeadline = findViewById(R.id.etDeadline);
         etDonationTarget = findViewById(R.id.etDonationTarget);
+        etDonationNumber = findViewById(R.id.etDonationNumber); // Initially hidden
         spCategory = findViewById(R.id.spCategory);
         spDonationMedium = findViewById(R.id.spDonationMedium);
-        etDonationNumber = findViewById(R.id.etDonationNumber);
-        btnUploadImage = findViewById(R.id.btnUploadImage);
         ivSelectedImage = findViewById(R.id.ivSelectedImage);
         btnCreateCampaign = findViewById(R.id.btnCreateCampaign);
+        btnUploadImage = findViewById(R.id.btnUploadImage);
 
-        // Set up DatePicker for deadline
-        etDeadline.setOnClickListener(v -> {
-            final Calendar calendar = Calendar.getInstance();
-            int year = calendar.get(Calendar.YEAR);
-            int month = calendar.get(Calendar.MONTH);
-            int day = calendar.get(Calendar.DAY_OF_MONTH);
+        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        storage = FirebaseStorage.getInstance();
 
-            DatePickerDialog datePickerDialog = new DatePickerDialog(CreateCampaignActivity.this,
-                    (view, selectedYear, selectedMonth, selectedDay) -> {
-                        String selectedDate = selectedDay + "/" + (selectedMonth + 1) + "/" + selectedYear;
-                        etDeadline.setText(selectedDate);
-                    }, year, month, day);
+        // Set up date picker for campaign deadline
+        etDeadline.setOnClickListener(v -> showDatePickerDialog());
 
-            datePickerDialog.show();
-        });
-
-        // Handle donation medium selection
+        // Handle Payment Method Spinner selection
         spDonationMedium.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedMedium = parent.getItemAtPosition(position).toString();
-                if (selectedMedium.equals("Bkash") || selectedMedium.equals("Nagad") || selectedMedium.equals("Debit card")) {
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                String selectedMedium = spDonationMedium.getSelectedItem().toString();
+                if (!selectedMedium.equals("Select")) {
                     etDonationNumber.setVisibility(View.VISIBLE);
-                    etDonationNumber.setHint("Enter your " + selectedMedium + " number");
+                    etDonationNumber.setHint("Enter " + selectedMedium + " number");
                 } else {
                     etDonationNumber.setVisibility(View.GONE);
                 }
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                etDonationNumber.setVisibility(View.GONE);
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // Do nothing
             }
         });
 
-        // Initialize image picker
-        ActivityResultLauncher<Intent> imagePickerLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        imageUri = result.getData().getData();
-                        ivSelectedImage.setImageURI(imageUri);
-                    }
-                }
-        );
+        // Handle Category Spinner selection
+        spCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                selectedCategory = spCategory.getSelectedItem().toString();
+            }
 
-        btnUploadImage.setOnClickListener(v -> {
-            Intent intent = new Intent();
-            intent.setType("image/*");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            imagePickerLauncher.launch(Intent.createChooser(intent, "Select Picture"));
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // Do nothing
+            }
         });
 
-        // Create campaign button
-//        btnCreateCampaign.setOnClickListener(v -> createCampaign());
+        // Handle Upload Image Button click
+        btnUploadImage.setOnClickListener(v -> openFileChooser());
+
+        // Handle Create Campaign Button click
+        btnCreateCampaign.setOnClickListener(v -> createCampaign());
     }
 
-//    private void createCampaign() {
-//        String title = etTitle.getText().toString().trim();
-//        String description = etDescription.getText().toString().trim();
-//        String campaignDeadline = etDeadline.getText().toString().trim();
-//        String donationtarget  = etDonationTarget.getText().toString().trim();
-//        String category = spCategory.getSelectedItem().toString();
-//        String donationMedium = spDonationMedium.getSelectedItem().toString();
-//        String creatorId = auth.getCurrentUser().getUid();
-//
-//        if (title.isEmpty() || description.isEmpty() || campaignDeadline.isEmpty() || donationtarget.isEmpty()) {
-//            Toast.makeText(this, "Please fill all the required fields.", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//
-//        // Convert donation target to integer
-//        int donationTarget = Integer.parseInt(donationtarget);
-//
-//        // Store the image and campaign info in Firebase
-//        if (imageUri != null) {
-//            StorageReference fileRef = storageRef.child(System.currentTimeMillis() + ".jpg");
-//            fileRef.putFile(imageUri).addOnSuccessListener(taskSnapshot -> fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
-//                String imageUrl = uri.toString();
-//                saveCampaignToFirestore(title, description, campaignDeadline, donationTarget, category, donationMedium, creatorId, imageUrl);
-//            })).addOnFailureListener(e -> Toast.makeText(CreateCampaignActivity.this, "Failed to upload image", Toast.LENGTH_SHORT).show());
-//        } else {
-//            // If no image is selected, save campaign without image URL
-//            saveCampaignToFirestore(title, description, campaignDeadline, donationTarget, category, donationMedium, creatorId, null);
-//        }
-//    }
-//
-//    private void saveCampaignToFirestore(String title, String description, String deadline, int donationTarget, String category,
-//                                         String donationMedium, String creatorId, @Nullable String imageUrl) {
-//        Map<String, Object> campaign = new HashMap<>();
-//        campaign.put("title", title);
-//        campaign.put("description", description);
-//        campaign.put("campaignDeadline", deadline);
-//        campaign.put("donationTarget", donationTarget);
-//        campaign.put("donorCount", 0);
-//        campaign.put("currentDonation", 0);
-//        campaign.put("category", category);
-//        campaign.put("creatorId", creatorId);
-//        campaign.put("image", imageUrl);  // Image URL or null
-//
-//        db.collection("campaigns").add(campaign)
-//                .addOnSuccessListener(documentReference -> Toast.makeText(CreateCampaignActivity.this, "Campaign created successfully", Toast.LENGTH_SHORT).show())
-//                .addOnFailureListener(e -> Toast.makeText(CreateCampaignActivity.this, "Failed to create campaign", Toast.LENGTH_SHORT).show());
-//    }
+    private void openFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
+
+    // Override the onActivityResult to get the image URI when an image is selected
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            imageUri = data.getData(); // Get the URI of the selected image
+
+            // You can display the selected image in an ImageView if needed
+            ImageView imageView = findViewById(R.id.ivSelectedImage);
+            imageView.setImageURI(imageUri);
+        }
+    }
+
+    private void showDatePickerDialog() {
+        final Calendar calendar = Calendar.getInstance();
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, year, monthOfYear, dayOfMonth) -> {
+            calendar.set(Calendar.YEAR, year);
+            calendar.set(Calendar.MONTH, monthOfYear);
+            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            etDeadline.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        datePickerDialog.show();
+    }
+
+    private void uploadImage() {
+        if (imageUri != null) {
+            // Get the reference to Firebase Storage
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference storageReference = storage.getReference("campaign_images");
+
+            // Create a unique filename for the image based on timestamp
+            StorageReference fileReference = storageReference.child(System.currentTimeMillis() + ".jpg");
+
+            // Upload the image
+            fileReference.putFile(imageUri)
+                    .addOnSuccessListener(taskSnapshot -> {
+                        // Get the download URL after upload is successful
+                        fileReference.getDownloadUrl().addOnSuccessListener(uri -> {
+                            String downloadUrl = uri.toString();
+                            // You can now store this URL in your Firestore or use it for other purposes
+                            Toast.makeText(CreateCampaignActivity.this, "Upload successful", Toast.LENGTH_SHORT).show();
+                        });
+                    })
+                    .addOnFailureListener(e -> {
+                        // Handle unsuccessful uploads
+                        Toast.makeText(CreateCampaignActivity.this, "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+        } else {
+            Toast.makeText(this, "No file selected", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    private void createCampaign() {
+        String title = etTitle.getText().toString();
+        String description = etDescription.getText().toString();
+        String deadlineStr = etDeadline.getText().toString();
+        int donationTarget = Integer.parseInt(etDonationTarget.getText().toString());
+        String donationMedium = spDonationMedium.getSelectedItem().toString();
+        String donationNumber = etDonationNumber.getText().toString();
+
+        // Validate inputs
+        if (title.isEmpty() || description.isEmpty() || deadlineStr.isEmpty() || donationNumber.isEmpty() || imageUri == null) {
+            Toast.makeText(this, "Please fill in all fields and upload an image", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Add payment method to the map
+        paymentMethods.put(donationMedium, donationNumber);
+
+        // Convert deadline to Date object
+        Date campaignDeadline = parseDate(deadlineStr);
+
+        if (campaignDeadline == null) {
+            Toast.makeText(this, "Please enter a valid deadline", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Get the image file reference in Firebase Storage
+        StorageReference imageRef = storage.getReference("campaign_images/" + System.currentTimeMillis() + ".jpg");
+        Toast.makeText(CreateCampaignActivity.this, imageUri.toString(), Toast.LENGTH_SHORT).show();
+        // Upload the image to Firebase Storage
+        imageRef.putFile(imageUri).addOnSuccessListener(taskSnapshot -> {
+            // Get the download URL of the uploaded image
+            imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                String imageUrl = uri.toString();
+
+                // Create Campaign object with the image URL
+                String creatorId = mAuth.getCurrentUser().getUid();
+                Campaign campaign = new Campaign(title, description, new Date(), campaignDeadline, donationTarget, 0,
+                        selectedCategory, creatorId, paymentMethods, imageUrl);
+
+                // Add campaign to Firestore
+                db.collection("campaigns").add(campaign).addOnSuccessListener(documentReference -> {
+                    Toast.makeText(CreateCampaignActivity.this, "Campaign created successfully", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(CreateCampaignActivity.this, CampaignActivity.class));
+                    finish();
+                }).addOnFailureListener(e -> {
+                    Toast.makeText(CreateCampaignActivity.this, "Failed to create campaign", Toast.LENGTH_SHORT).show();
+                });
+
+            }).addOnFailureListener(e -> {
+                Toast.makeText(CreateCampaignActivity.this, "Failed to get image URL", Toast.LENGTH_SHORT).show();
+            });
+        }).addOnFailureListener(e -> {
+            Toast.makeText(CreateCampaignActivity.this, "Failed to upload image", Toast.LENGTH_SHORT).show();
+        });
+    }
+
+
+    // Method for converting String to Date
+    private Date parseDate(String dateStr) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy"); // Define the format of the date
+        Date date = null;
+        try {
+            date = dateFormat.parse(dateStr); // Parse the string to a Date object
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
 }

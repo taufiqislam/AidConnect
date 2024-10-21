@@ -10,7 +10,7 @@
     tools:context=".CreateCampaignActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent  "
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="16dp"
         tools:context=".CreateCampaignActivity">
@@ -170,16 +170,16 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.842" />
+            app:layout_constraintVertical_bias="0.785" />
 
         <ImageView
             android:id="@+id/ivSelectedImage"
-            android:layout_width="300dp"
-            android:layout_height="150dp"
+            android:layout_width="223dp"
+            android:layout_height="102dp"
             android:contentDescription="Selected Image"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintHorizontal_bias="0.044"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0" />
@@ -243,20 +243,20 @@
 
         <EditText
             android:id="@+id/etDonationNumber"
-            android:layout_width="0dp"
-            android:layout_height="38dp"
+            android:layout_width="194dp"
+            android:layout_height="43dp"
             android:layout_marginTop="16dp"
             android:background="@drawable/edittext_background"
             android:hint="Enter your number"
             android:inputType="number"
             android:padding="10dp"
-            android:visibility="gone"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.767" />
+            app:layout_constraintVertical_bias="0.779" />
 
         <Button
             android:id="@+id/btnCreateCampaign"
@@ -270,10 +270,10 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintHorizontal_bias="0.991"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/spDonationMedium"
-            app:layout_constraintVertical_bias="0.74" />
+            app:layout_constraintVertical_bias="1.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

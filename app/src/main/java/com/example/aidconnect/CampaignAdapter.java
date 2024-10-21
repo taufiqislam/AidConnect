@@ -12,6 +12,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -46,7 +48,13 @@ public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.Campai
         holder.campaignTitle.setText(campaign.getTitle());
         holder.campaignDeadline.setText("Deadline: " + daysLeft + " days left");
         holder.campaignDonors.setText("Donors: " + campaign.getDonorCount());
-        holder.campaignImage.setImageResource(campaign.getImage());
+
+        // Load image using Glide
+        Glide.with(context)
+                .load(campaign.getImageUrl()) // Assuming this is a URL, change if it's a resource ID
+                .placeholder(R.drawable.sample) // A placeholder image while loading
+                .error(R.drawable.sample) // An error image in case loading fails
+                .into(holder.campaignImage);
 
         // Action button for donations
         holder.campaignActionButton.setOnClickListener(v -> {
@@ -60,13 +68,6 @@ public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.Campai
             Intent intent = new Intent(context, CampaignDetailsActivity.class);
             intent.putExtra("campaign", campaign);
             intent.putExtra("campaignId", campaignId);
-            intent.putExtra("campaignTitle", campaign.getTitle());
-            intent.putExtra("campaignDescription", campaign.getDescription());
-            intent.putExtra("campaignDetails", "Donation Target: " + campaign.getDonationTarget() +
-                    "\nCurrent Donation: " + campaign.getCurrentDonation() +
-                    "\nDays Left: " + getDaysLeft(campaign.getCampaignDeadline())); // example detail
-            intent.putExtra("campaignCreatorId", campaign.getCreatorId());
-            intent.putExtra("campaignImage", campaign.getImage());  // Pass image resource ID
             context.startActivity(intent);
         });
     }
@@ -75,7 +76,6 @@ public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.Campai
         long diffInMillis = deadline.getTime() - new Date().getTime(); // Get the difference in milliseconds
         return TimeUnit.MILLISECONDS.toDays(diffInMillis); // Convert milliseconds to days
     }
-
 
     @Override
     public int getItemCount() {
