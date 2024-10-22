@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -64,7 +65,12 @@ public class CampaignDetailsActivity extends BaseActivity {
         tvDaysLeft = findViewById(R.id.tvDaysLeft);
 
         // Set the campaign details in the views
-        campaignImageView.setImageResource(imageResId);
+        Glide.with(this)
+                .load(campaign.getImageUrl()) // Assuming this is a URL, change if it's a resource ID
+                .placeholder(R.drawable.sample) // A placeholder image while loading
+                .error(R.drawable.sample) // An error image in case loading fails
+                .into(campaignImageView);
+        //campaignImageView.setImageResource(imageResId);
         campaignTitle.setText(title);
         campaignDescription.setText(description);
 

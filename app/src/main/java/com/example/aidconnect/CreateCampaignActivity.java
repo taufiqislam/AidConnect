@@ -127,6 +127,7 @@ public class CreateCampaignActivity extends AppCompatActivity {
             // You can display the selected image in an ImageView if needed
             ImageView imageView = findViewById(R.id.ivSelectedImage);
             imageView.setImageURI(imageUri);
+            imageView.setVisibility(View.VISIBLE);
         }
     }
 
@@ -141,33 +142,6 @@ public class CreateCampaignActivity extends AppCompatActivity {
         datePickerDialog.show();
     }
 
-    private void uploadImage() {
-        if (imageUri != null) {
-            // Get the reference to Firebase Storage
-            FirebaseStorage storage = FirebaseStorage.getInstance();
-            StorageReference storageReference = storage.getReference("campaign_images");
-
-            // Create a unique filename for the image based on timestamp
-            StorageReference fileReference = storageReference.child(System.currentTimeMillis() + ".jpg");
-
-            // Upload the image
-            fileReference.putFile(imageUri)
-                    .addOnSuccessListener(taskSnapshot -> {
-                        // Get the download URL after upload is successful
-                        fileReference.getDownloadUrl().addOnSuccessListener(uri -> {
-                            String downloadUrl = uri.toString();
-                            // You can now store this URL in your Firestore or use it for other purposes
-                            Toast.makeText(CreateCampaignActivity.this, "Upload successful", Toast.LENGTH_SHORT).show();
-                        });
-                    })
-                    .addOnFailureListener(e -> {
-                        // Handle unsuccessful uploads
-                        Toast.makeText(CreateCampaignActivity.this, "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    });
-        } else {
-            Toast.makeText(this, "No file selected", Toast.LENGTH_SHORT).show();
-        }
-    }
 
 
     private void createCampaign() {
@@ -197,7 +171,7 @@ public class CreateCampaignActivity extends AppCompatActivity {
 
         // Get the image file reference in Firebase Storage
         StorageReference imageRef = storage.getReference("campaign_images/" + System.currentTimeMillis() + ".jpg");
-        Toast.makeText(CreateCampaignActivity.this, imageUri.toString(), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(CreateCampaignActivity.this, imageUri.toString(), Toast.LENGTH_SHORT).show();
         // Upload the image to Firebase Storage
         imageRef.putFile(imageUri).addOnSuccessListener(taskSnapshot -> {
             // Get the download URL of the uploaded image
