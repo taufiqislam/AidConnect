@@ -88,10 +88,17 @@ public class CampaignDetailsActivity extends BaseActivity {
 
         // Set up the donate button click listener
         donateButton.setOnClickListener(v -> {
-            Intent donationIntent = new Intent(CampaignDetailsActivity.this, DonationActivity.class);
-            donationIntent.putExtra("campaignId", id);
-            donationIntent.putExtra("campaignTitle", title);
-            startActivity(donationIntent);
+            if (mAuth.getCurrentUser() != null) {
+                Intent donationIntent = new Intent(CampaignDetailsActivity.this, DonationActivity.class);
+                donationIntent.putExtra("campaignId", id);
+                donationIntent.putExtra("campaignTitle", title);
+                startActivity(donationIntent);
+            } else {
+                // User is not logged in, redirect to LoginActivity
+                Intent loginIntent = new Intent(CampaignDetailsActivity.this, LoginActivity.class);
+                startActivity(loginIntent);
+            }
+
         });
     }
 

@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -30,7 +31,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CreateCampaignActivity extends AppCompatActivity {
+public class CreateCampaignActivity extends BaseActivity {
 
     private static final int PICK_IMAGE_REQUEST = 1;
 
@@ -51,6 +52,11 @@ public class CreateCampaignActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_campaign);
 
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            setupDrawer();
+        }
         // Initialize views
         etTitle = findViewById(R.id.etTitle);
         etDescription = findViewById(R.id.etDescription);

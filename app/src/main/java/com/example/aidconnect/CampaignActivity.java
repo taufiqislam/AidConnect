@@ -106,8 +106,15 @@ public class CampaignActivity extends BaseActivity {
 
         FloatingActionButton addCampaignButton = findViewById(R.id.addCampaignButton);
         addCampaignButton.setOnClickListener(v -> {
-            Intent intent = new Intent(CampaignActivity.this, CreateCampaignActivity.class);
-            startActivity(intent);
+            if (mAuth.getCurrentUser() != null) {
+                // User is logged in, proceed to CreateCampaignActivity
+                Intent intent = new Intent(CampaignActivity.this, CreateCampaignActivity.class);
+                startActivity(intent);
+            } else {
+                // User is not logged in, redirect to LoginActivity
+                Intent intent = new Intent(CampaignActivity.this, LoginActivity.class);
+                startActivity(intent);
+            }
         });
     }
 
