@@ -14,12 +14,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class DonationActivity extends AppCompatActivity {
+public class DonationActivity extends BaseActivity {
 
     private EditText inputDonationAmount;
     private Button btnDonate;
@@ -34,6 +35,12 @@ public class DonationActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_donation);
+
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            setupDrawer();
+        }
 
         inputDonationAmount = findViewById(R.id.inputDonationAmount);
         btnDonate = findViewById(R.id.btnDonate);

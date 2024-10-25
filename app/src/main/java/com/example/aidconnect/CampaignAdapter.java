@@ -1,5 +1,7 @@
 package com.example.aidconnect;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -13,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Date;
 import java.util.List;
@@ -58,10 +61,18 @@ public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.Campai
 
         // Action button for donations
         holder.campaignActionButton.setOnClickListener(v -> {
-            Intent intent = new Intent(context, DonationActivity.class);
-            intent.putExtra("campaignId", campaignId);
-            intent.putExtra("campaignTitle", campaign.getTitle());
-            context.startActivity(intent);
+            FirebaseAuth mAuth = FirebaseAuth.getInstance();
+            if (mAuth.getCurrentUser() != null) {
+                Intent intent = new Intent(context, DonationActivity.class);
+                intent.putExtra("campaignId", campaignId);
+                intent.putExtra("campaignTitle", campaign.getTitle());
+                context.startActivity(intent);
+            } else {
+                // User is not logged in, redirect to LoginActivity
+                Intent intent = new Intent(context,LoginActivity.class);
+                context.startActivity(intent);
+            }
+
         });
 
         holder.itemView.setOnClickListener(v -> {
