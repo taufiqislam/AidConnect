@@ -116,6 +116,7 @@ public class DonationActivity extends BaseActivity {
         db.collection("donations")
                 .whereEqualTo("donorId", userId)
                 .whereEqualTo("campaignId", campaignId)
+                .limit(2)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     boolean hasDonatedBefore = queryDocumentSnapshots.size() > 1;

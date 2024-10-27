@@ -45,8 +45,8 @@
             <!-- RecyclerView for showing all donations -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewDonations"
-                android:layout_width="377dp"
-                android:layout_height="558dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_margin="16dp"
                 android:scrollbars="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
