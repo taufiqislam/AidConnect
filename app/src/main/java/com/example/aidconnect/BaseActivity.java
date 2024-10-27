@@ -76,6 +76,10 @@ public class BaseActivity extends AppCompatActivity {
                 {
                     openDonations();
                 }
+                else if(item.getItemId() == R.id.nav_campaigns)
+                {
+                    openCampaigns();
+                }
                 else if(item.getItemId() == R.id.nav_settings)
                 {
                     openSettings();
@@ -89,6 +93,7 @@ public class BaseActivity extends AppCompatActivity {
             });
         }
     }
+
 
 
 
@@ -119,13 +124,18 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     // Common method to open profile
-    protected void openProfile() {
+    private void openProfile() {
         Intent intent = new Intent(this, ProfileActivity.class);
         startActivity(intent);
     }
 
     private void openDonations() {
         Intent intent = new Intent(this, MyDonationsActivity.class);
+        startActivity(intent);
+    }
+
+    private void openCampaigns() {
+        Intent intent = new Intent(this, MyCampaignsActivity.class);
         startActivity(intent);
     }
 

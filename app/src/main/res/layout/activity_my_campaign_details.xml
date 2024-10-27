@@ -142,11 +142,11 @@
             </LinearLayout>
 
             <Button
-                android:id="@+id/btnDonate"
+                android:id="@+id/btnEditCampaign"
                 android:layout_width="380dp"
                 android:layout_height="45dp"
                 android:layout_marginBottom="20dp"
-                android:text="Donate"
+                android:text="Edit Campaign"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"

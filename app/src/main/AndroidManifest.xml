@@ -3,10 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
-
-
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
 
     <application
@@ -20,9 +19,14 @@
         android:theme="@style/Theme.AidConnect"
         tools:targetApi="31">
         <activity
+            android:name=".MyCampaignDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MyCampaignsActivity"
+            android:exported="false" />
+        <activity
             android:name=".CreateCampaignActivity"
             android:exported="false" />
-
         <activity
             android:name=".CampaignDetailsActivity"
             android:exported="false" />
