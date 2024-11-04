@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -46,7 +47,6 @@ public class CreateCampaignActivity extends BaseActivity {
     private Uri imageUri;  // To store the image URI for later use
     private FirebaseStorage storage;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +57,7 @@ public class CreateCampaignActivity extends BaseActivity {
         if (currentUser != null) {
             setupDrawer();
         }
+
         // Initialize views
         etTitle = findViewById(R.id.etTitle);
         etDescription = findViewById(R.id.etDescription);
@@ -70,30 +71,13 @@ public class CreateCampaignActivity extends BaseActivity {
         btnUploadImage = findViewById(R.id.btnUploadImage);
 
         db = FirebaseFirestore.getInstance();
-        mAuth = FirebaseAuth.getInstance();
         storage = FirebaseStorage.getInstance();
 
-        // Set up date picker for campaign deadline
-        etDeadline.setOnClickListener(v -> showDatePickerDialog());
-
-        // Handle Payment Method Spinner selection
-        spDonationMedium.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                String selectedMedium = spDonationMedium.getSelectedItem().toString();
-                if (!selectedMedium.equals("Select")) {
-                    etDonationNumber.setVisibility(View.VISIBLE);
-                    etDonationNumber.setHint("Enter " + selectedMedium + " number");
-                } else {
-                    etDonationNumber.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // Do nothing
-            }
-        });
+        // Set up the spinner for categories
+        String[] campaignCategories = getResources().getStringArray(R.array.campaign_categories);
+        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, campaignCategories);
+        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spCategory.setAdapter(categoryAdapter);
 
         // Handle Category Spinner selection
         spCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -105,6 +89,38 @@ public class CreateCampaignActivity extends BaseActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
                 // Do nothing
+            }
+        });
+
+        // Set up date picker for campaign deadline
+        etDeadline.setOnClickListener(v -> showDatePickerDialog());
+
+        // Handle Payment Method Spinner selection
+        etDonationNumber.setVisibility(View.GONE);
+
+        // Load the donation mediums from strings.xml
+        String[] donationMediums = getResources().getStringArray(R.array.donation_mediums);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, donationMediums);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spDonationMedium.setAdapter(adapter);
+
+        // Handle Donation Medium Spinner selection
+        spDonationMedium.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                String selectedMedium = spDonationMedium.getSelectedItem().toString();
+                // Check the selected item and set visibility accordingly
+                if (selectedMedium.equals("None")) {
+                    etDonationNumber.setVisibility(View.GONE); // Hide EditText if "none" is chosen
+                } else {
+                    etDonationNumber.setVisibility(View.VISIBLE); // Show EditText for valid selections
+                    etDonationNumber.setHint("Enter " + selectedMedium + " number");
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                etDonationNumber.setVisibility(View.GONE); // Hide if nothing is selected
             }
         });
 
@@ -122,18 +138,14 @@ public class CreateCampaignActivity extends BaseActivity {
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
 
-    // Override the onActivityResult to get the image URI when an image is selected
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             imageUri = data.getData(); // Get the URI of the selected image
-
-            // You can display the selected image in an ImageView if needed
-            ImageView imageView = findViewById(R.id.ivSelectedImage);
-            imageView.setImageURI(imageUri);
-            imageView.setVisibility(View.VISIBLE);
+            ivSelectedImage.setImageURI(imageUri);
+            ivSelectedImage.setVisibility(View.VISIBLE);
         }
     }
 
@@ -147,8 +159,6 @@ public class CreateCampaignActivity extends BaseActivity {
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
         datePickerDialog.show();
     }
-
-
 
     private void createCampaign() {
         String title = etTitle.getText().toString();
@@ -177,7 +187,7 @@ public class CreateCampaignActivity extends BaseActivity {
 
         // Get the image file reference in Firebase Storage
         StorageReference imageRef = storage.getReference("campaign_images/" + System.currentTimeMillis() + ".jpg");
-        //Toast.makeText(CreateCampaignActivity.this, imageUri.toString(), Toast.LENGTH_SHORT).show();
+
         // Upload the image to Firebase Storage
         imageRef.putFile(imageUri).addOnSuccessListener(taskSnapshot -> {
             // Get the download URL of the uploaded image
@@ -206,8 +216,6 @@ public class CreateCampaignActivity extends BaseActivity {
         });
     }
 
-
-    // Method for converting String to Date
     private Date parseDate(String dateStr) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy"); // Define the format of the date
         Date date = null;

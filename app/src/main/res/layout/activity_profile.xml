@@ -18,10 +18,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
-            android:elevation="4dp"
-            app:layout_constraintTop_toTopOf="parent">
+            android:elevation="4dp">
 
-            <!-- Title inside the toolbar -->
             <TextView
                 android:id="@+id/tvCampaignsTitle"
                 android:layout_width="wrap_content"
@@ -32,7 +30,6 @@
                 android:layout_gravity="start"
                 android:layout_marginStart="16dp"
                 android:textColor="@android:color/white"/>
-
         </androidx.appcompat.widget.Toolbar>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -41,158 +38,7 @@
             android:background="@color/backgroundColor"
             tools:context=".ProfileActivity">
 
-
             <!-- Profile Title -->
-
-            <!-- First Name with Icon -->
-
-            <!-- Last Name with Icon -->
-
-
-            <TextView
-                android:id="@+id/textLastName"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="24dp"
-                android:textColor="@color/black"
-                android:textSize="16dp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@id/labelLastName"
-                app:layout_constraintTop_toBottomOf="@id/labelFirstName" />
-
-            <TextView
-                android:id="@+id/labelLastName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="24dp"
-                android:text="Last Name:"
-                android:textColor="@color/black"
-                android:textSize="16dp"
-                app:layout_constraintStart_toEndOf="@id/iconLastName"
-                app:layout_constraintTop_toBottomOf="@id/labelFirstName" />
-
-            <ImageView
-                android:id="@+id/iconLastName"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="24dp"
-                android:src="@drawable/ic_person"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/labelFirstName" />
-
-            <TextView
-                android:id="@+id/textEmail"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="20dp"
-                android:textColor="@color/black"
-                android:textSize="16dp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@id/labelEmail"
-                app:layout_constraintTop_toBottomOf="@id/labelLastName" />
-
-            <TextView
-                android:id="@+id/labelEmail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="20dp"
-                android:text="Email:"
-                android:textColor="@color/black"
-                android:textSize="16dp"
-                app:layout_constraintStart_toEndOf="@id/iconEmail"
-                app:layout_constraintTop_toBottomOf="@id/labelLastName" />
-
-            <ImageView
-                android:id="@+id/iconEmail"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="20dp"
-                android:src="@drawable/ic_email"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/labelLastName" />
-
-            <ImageView
-                android:id="@+id/iconFirstName"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="84dp"
-                android:src="@drawable/ic_person"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textProfileTitle" />
-
-            <TextView
-                android:id="@+id/textPhone"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="20dp"
-                android:textColor="@color/black"
-                android:textSize="16dp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@id/labelPhone"
-                app:layout_constraintTop_toBottomOf="@id/labelEmail" />
-
-            <TextView
-                android:id="@+id/labelPhone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="20dp"
-                android:text="Phone:"
-                android:textColor="@color/black"
-                android:textSize="16dp"
-                app:layout_constraintStart_toEndOf="@id/iconPhone"
-                app:layout_constraintTop_toBottomOf="@id/labelEmail" />
-
-            <ImageView
-                android:id="@+id/iconPhone"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="20dp"
-                android:src="@drawable/ic_phone"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/labelEmail" />
-
-            <TextView
-                android:id="@+id/textFirstName"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="84dp"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                android:textSize="16dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@id/labelFirstName"
-                app:layout_constraintTop_toBottomOf="@id/textProfileTitle" />
-
-            <TextView
-                android:id="@+id/labelFirstName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="84dp"
-                android:text="First Name:"
-                android:textSize="16dp"
-                android:textColor="@color/black"
-                app:layout_constraintStart_toEndOf="@id/iconFirstName"
-                app:layout_constraintTop_toBottomOf="@id/textProfileTitle" />
-
             <TextView
                 android:id="@+id/textProfileTitle"
                 android:layout_width="wrap_content"
@@ -202,16 +48,251 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.519"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <!-- Email with Icon -->
+            <!-- First Name Card - Half Width -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardFirstName"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardElevation="4dp"
+                app:cardCornerRadius="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/cardLastName"
+                app:layout_constraintTop_toBottomOf="@id/textProfileTitle"
+                app:layout_constraintWidth_percent="0.5">
 
-            <!-- Phone with Icon -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:id="@+id/labelFirstName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="First Name"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/textFirstName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:layout_marginTop="4dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Last Name Card - Half Width -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardLastName"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardElevation="4dp"
+                app:cardCornerRadius="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/cardFirstName"
+                app:layout_constraintTop_toBottomOf="@id/textProfileTitle"
+                app:layout_constraintWidth_percent="0.5">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:id="@+id/labelLastName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Last Name"
+                        android:layout_gravity="center"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/textLastName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:textSize="14sp"
+                        android:textColor="@color/black"
+                        android:layout_marginTop="4dp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Email Card -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardEmail"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardElevation="4dp"
+                app:cardCornerRadius="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cardFirstName">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:id="@+id/labelEmail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Email"
+                        android:layout_gravity="center"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/textEmail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textSize="14sp"
+                        android:textColor="@color/black"
+                        android:layout_marginTop="4dp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Phone Card -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardPhone"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardElevation="4dp"
+                app:cardCornerRadius="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cardEmail">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:id="@+id/labelPhone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Phone"
+                        android:layout_gravity="center"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/textPhone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:textSize="14sp"
+                        android:textColor="@color/black"
+                        android:layout_marginTop="4dp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- See My Campaigns Card -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardMyCampaigns"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardElevation="4dp"
+                app:cardCornerRadius="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cardPhone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:id="@+id/labelMyCampaigns"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="See My Campaigns"
+                        android:layout_gravity="center"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/btnMyCampaigns"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="View Campaigns"
+                        android:layout_marginTop="8dp"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:textColor="@android:color/white"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- My Donations Card -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardMyDonations"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardElevation="4dp"
+                app:cardCornerRadius="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cardMyCampaigns">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:id="@+id/labelMyDonations"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="My Donations"
+                        android:layout_gravity="center"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/btnMyDonations"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="View Donations"
+                        android:layout_marginTop="8dp"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:textColor="@android:color/white"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
+
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigation_view"
         android:layout_width="wrap_content"
@@ -219,4 +300,6 @@
         android:layout_gravity="start"
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/nav_menu"/>
+
+
 </androidx.drawerlayout.widget.DrawerLayout>
