@@ -6,6 +6,8 @@
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
     <color name="backgroundColor">#F4F4F4</color>
+    <color name="progress_background">#E0E0E0</color>
+    <color name="progress_color">#9C27B0</color>
 
     <!-- Add other colors as necessary -->
     <color name="black">#000000</color>

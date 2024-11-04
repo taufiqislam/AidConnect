@@ -15,6 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -96,13 +98,8 @@ public class DonationActivity extends BaseActivity {
         db.collection("donations")
                 .add(donation)
                 .addOnSuccessListener(documentReference -> {
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(DonationActivity.this, "Donation successful!", Toast.LENGTH_SHORT).show();
-
-                    // Redirect back to campaign page or show confirmation
-                    Intent intent = new Intent(DonationActivity.this, CampaignActivity.class);
-                    startActivity(intent);
-                    finish();
+                    // Update the campaign details
+                    updateCampaignAfterDonation(donationAmount);
                 })
                 .addOnFailureListener(e -> {
                     progressBar.setVisibility(View.GONE);
@@ -110,4 +107,70 @@ public class DonationActivity extends BaseActivity {
                     Toast.makeText(DonationActivity.this, "Donation failed!", Toast.LENGTH_SHORT).show();
                 });
     }
+
+    private void updateCampaignAfterDonation(int donationAmount) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        progressBar.setVisibility(View.VISIBLE);
+
+        // Check if the user has already donated to this campaign
+        db.collection("donations")
+                .whereEqualTo("donorId", userId)
+                .whereEqualTo("campaignId", campaignId)
+                .limit(2)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    boolean hasDonatedBefore = queryDocumentSnapshots.size() > 1;
+
+                    // Reference to the campaign document
+                    db.collection("campaigns").document(campaignId)
+                            .get()
+                            .addOnSuccessListener(documentSnapshot -> {
+                                if (documentSnapshot.exists()) {
+                                    // Retrieve current values
+                                    int currentDonation = documentSnapshot.getLong("currentDonation").intValue();
+                                    int donorCount = documentSnapshot.getLong("donorCount").intValue();
+
+                                    // Prepare updates
+                                    Map<String, Object> updates = new HashMap<>();
+                                    updates.put("currentDonation", currentDonation + donationAmount);
+
+                                    // If the user hasn't donated before, increment donorCount
+                                    if (!hasDonatedBefore) {
+                                        updates.put("donorCount", donorCount + 1);
+                                    }
+
+                                    // Update the campaign document with new donation data
+                                    db.collection("campaigns").document(campaignId)
+                                            .update(updates)
+                                            .addOnSuccessListener(aVoid -> {
+                                                progressBar.setVisibility(View.GONE);
+                                                Toast.makeText(DonationActivity.this, "Donation successful!", Toast.LENGTH_SHORT).show();
+
+                                                // Redirect back to campaign page or show confirmation
+                                                Intent intent = new Intent(DonationActivity.this, CampaignActivity.class);
+                                                startActivity(intent);
+                                                finish();
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                progressBar.setVisibility(View.GONE);
+                                                Log.e("DonationActivity", "Error updating campaign", e);
+                                                Toast.makeText(DonationActivity.this, "Failed to update campaign!", Toast.LENGTH_SHORT).show();
+                                            });
+                                }
+                            })
+                            .addOnFailureListener(e -> {
+                                progressBar.setVisibility(View.GONE);
+                                Log.e("DonationActivity", "Error retrieving campaign", e);
+                                Toast.makeText(DonationActivity.this, "Error retrieving campaign details!", Toast.LENGTH_SHORT).show();
+                            });
+                })
+                .addOnFailureListener(e -> {
+                    progressBar.setVisibility(View.GONE);
+                    Log.e("DonationActivity", "Error checking previous donations", e);
+                    Toast.makeText(DonationActivity.this, "Error verifying previous donations!", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+
+
 }
