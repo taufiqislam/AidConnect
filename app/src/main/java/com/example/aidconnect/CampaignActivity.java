@@ -65,8 +65,9 @@ public class CampaignActivity extends BaseActivity {
         fetchCampaignsFromFirestore();
 
         // Setup tab layout
-        tabLayout.addTab(tabLayout.newTab().setText("Newly Added"));
+
         tabLayout.addTab(tabLayout.newTab().setText("Popular"));
+        tabLayout.addTab(tabLayout.newTab().setText("Newly Added"));
         tabLayout.addTab(tabLayout.newTab().setText("Ending Soon"));
 
         // Set up tab selection listener
@@ -75,10 +76,10 @@ public class CampaignActivity extends BaseActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
                     case 0:
-                        sortCampaignsByCreationDate(); // Newly added
+                        sortCampaignsByDonorCount(); // Newly added
                         break;
                     case 1:
-                        sortCampaignsByDonorCount(); // Popular
+                        sortCampaignsByCreationDate(); // Popular
                         break;
                     case 2:
                         sortCampaignsByDeadline(); // Ending soon
@@ -138,6 +139,7 @@ public class CampaignActivity extends BaseActivity {
                 filteredCampaigns.addAll(allCampaigns);
                 campaignAdapter = new CampaignAdapter(filteredCampaigns, campaignIds, this);
                 rvCampaigns.setAdapter(campaignAdapter);
+                sortCampaignsByDonorCount();
             } else {
                 Toast.makeText(CampaignActivity.this, "Error getting campaigns", Toast.LENGTH_SHORT).show();
             }
