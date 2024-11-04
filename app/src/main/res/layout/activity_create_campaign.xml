@@ -60,19 +60,21 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <!-- Campaign Description -->
                 <EditText
                     android:id="@+id/etTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/edittext_background_selector"
                     android:hint="Enter campaign title"
-                    android:background="@drawable/edittext_background"
                     android:padding="10dp"
-                    app:layout_constraintTop_toBottomOf="@id/tvTitle"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintWidth_percent="1.0"/>
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvTitle"
+                    app:layout_constraintWidth_percent="1.0" />
 
-                <!-- Campaign Description -->
                 <TextView
                     android:id="@+id/tvDescription"
                     android:layout_width="wrap_content"
@@ -89,15 +91,17 @@
                     android:id="@+id/etDescription"
                     android:layout_width="0dp"
                     android:layout_height="100dp"
-                    android:hint="Enter campaign description"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/edittext_background_selector"
                     android:gravity="top"
+                    android:hint="Enter campaign description"
                     android:inputType="textMultiLine"
-                    android:background="@drawable/edittext_background"
                     android:padding="10dp"
-                    app:layout_constraintTop_toBottomOf="@id/tvDescription"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintWidth_percent="1.0"/>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvDescription"
+                    app:layout_constraintWidth_percent="1.0" />
+
 
                 <!-- Campaign Deadline -->
                 <TextView
@@ -116,14 +120,15 @@
                     android:id="@+id/etDeadline"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:hint="Pick a deadline"
-                    android:background="@drawable/edittext_background"
-                    android:padding="10dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/edittext_background_selector"
                     android:clickable="true"
                     android:focusable="false"
-                    app:layout_constraintTop_toBottomOf="@id/tvDeadline"
+                    android:hint="Pick a deadline"
+                    android:padding="10dp"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"/>
+                    app:layout_constraintTop_toBottomOf="@id/tvDeadline" />
 
                 <!-- Donation Target -->
                 <TextView
@@ -142,12 +147,13 @@
                     android:id="@+id/etDonationTarget"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/edittext_background_selector"
                     android:hint="BDT"
-                    android:background="@drawable/edittext_background"
                     android:padding="10dp"
-                    app:layout_constraintTop_toBottomOf="@id/tvDonationTarget"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"/>
+                    app:layout_constraintTop_toBottomOf="@id/tvDonationTarget" />
 
                 <!-- Upload Image Button -->
                 <Button
@@ -175,23 +181,25 @@
                     android:id="@+id/tvCategory"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
                     android:text="Select Category"
                     android:textColor="@android:color/black"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    app:layout_constraintTop_toBottomOf="@id/ivSelectedImage"
                     app:layout_constraintStart_toStartOf="parent"
-                    android:layout_marginTop="16dp"/>
+                    app:layout_constraintTop_toBottomOf="@id/ivSelectedImage" />
 
                 <Spinner
                     android:id="@+id/spCategory"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="12dp"
+                    android:padding="10dp"
+                    android:background="@drawable/spinner_background"
                     android:entries="@array/campaign_categories"
-                    app:layout_constraintTop_toBottomOf="@id/tvCategory"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"/>
+                    app:layout_constraintTop_toBottomOf="@id/tvCategory" />
 
                 <!-- Donation Medium Selection -->
                 <TextView
@@ -210,39 +218,42 @@
                     android:id="@+id/spDonationMedium"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/spinner_background"
+                    android:layout_marginTop="12dp"
+                    android:padding="10dp"
                     android:entries="@array/donation_mediums"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintTop_toBottomOf="@id/tvDonationMedium"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"/>
+                    app:layout_constraintTop_toBottomOf="@id/tvDonationMedium" />
 
                 <!-- Donation Number Input -->
                 <EditText
                     android:id="@+id/etDonationNumber"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/edittext_background"
                     android:hint="Enter your number"
                     android:inputType="number"
-                    android:background="@drawable/edittext_background"
                     android:padding="10dp"
                     android:visibility="gone"
-                    app:layout_constraintTop_toBottomOf="@id/spDonationMedium"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"/>
+                    app:layout_constraintTop_toBottomOf="@id/spDonationMedium" />
 
                 <!-- Create Campaign Button -->
                 <Button
                     android:id="@+id/btnCreateCampaign"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Create Campaign"
-                    android:textStyle="bold"
+                    android:layout_marginTop="20dp"
                     android:backgroundTint="@color/colorPrimary"
+                    android:text="Create Campaign"
                     android:textColor="@android:color/white"
-                    android:layout_marginTop="16dp"
-                    app:layout_constraintTop_toBottomOf="@id/etDonationNumber"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"/>
+                    app:layout_constraintTop_toBottomOf="@id/etDonationNumber" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
     </LinearLayout>
