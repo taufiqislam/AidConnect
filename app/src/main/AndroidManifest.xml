@@ -19,6 +19,17 @@
         android:theme="@style/Theme.AidConnect"
         tools:targetApi="31">
         <activity
+            android:name=".SplashActivity"
+            android:exported="true">
+            <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>/>
+
+        </activity>
+
+        <activity
             android:name=".MyCampaignDetailsActivity"
             android:exported="false" />
         <activity
@@ -47,13 +58,8 @@
             android:exported="false" />
         <activity
             android:name=".CampaignActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:exported="false"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>

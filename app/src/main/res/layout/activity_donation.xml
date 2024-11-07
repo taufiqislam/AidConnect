@@ -1,9 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
-
 <androidx.drawerlayout.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -18,10 +15,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
-            android:elevation="4dp"
-            app:layout_constraintTop_toTopOf="parent">
+            android:elevation="4dp">
 
-            <!-- Title inside the toolbar -->
             <TextView
                 android:id="@+id/tvCampaignsTitle"
                 android:layout_width="wrap_content"
@@ -32,18 +27,11 @@
                 android:layout_gravity="start"
                 android:layout_marginStart="16dp"
                 android:textColor="@android:color/white"/>
-
         </androidx.appcompat.widget.Toolbar>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context=".DonationActivity">
-
-
-            <!-- Campaign Title -->
-
-            <!-- Donation Amount Input -->
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/campaignTitle"
@@ -53,23 +41,88 @@
                 android:text="Campaign Title"
                 android:textSize="24sp"
                 android:textStyle="bold"
+                android:textColor="#1A237E"
+            android:padding="8dp"
+            android:background="@drawable/text_background"
+            android:elevation="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+            <!-- Donation Mediums -->
+
+            <!-- Donation Amount Input -->
+
+            <LinearLayout
+                android:id="@+id/donation_mediums"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.497"
+                app:layout_constraintHorizontal_bias="0.495"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/campaignTitle">
+
+                <ImageView
+                    android:id="@+id/imgBkash"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_margin="8dp"
+                    android:clickable="true"
+                    android:contentDescription="Bkash"
+                    android:src="@drawable/bkash" />
+
+                <ImageView
+                    android:id="@+id/imgNagad"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_margin="8dp"
+                    android:clickable="true"
+                    android:contentDescription="Nagad"
+                    android:src="@drawable/nagad" />
+
+                <ImageView
+                    android:id="@+id/imgRocket"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_margin="8dp"
+                    android:clickable="true"
+                    android:contentDescription="Rocket"
+                    android:src="@drawable/rocket" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvEnterAmount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Enter Donation Amount"
+                android:layout_marginTop="60dp"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/donation_mediums"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <EditText
                 android:id="@+id/inputDonationAmount"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:hint="Enter Donation Amount"
+                android:layout_marginTop="50dp"
+                android:gravity="center"
                 android:inputType="number"
                 android:padding="12dp"
-                app:layout_constraintTop_toBottomOf="@id/campaignTitle"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/tvEnterAmount"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginBottom="16dp" />
 
+            <!-- Donate Button -->
             <!-- Donate Button -->
             <Button
                 android:id="@+id/btnDonate"
@@ -77,9 +130,76 @@
                 android:layout_height="wrap_content"
                 android:text="Donate"
                 android:textStyle="bold"
+                android:visibility="gone"
+                android:layout_marginTop="50dp"
                 app:layout_constraintTop_toBottomOf="@id/inputDonationAmount"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
+
+            <!-- CardView for Success Message Modal -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/successModal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="8dp"
+                android:layout_margin="16dp"
+                app:layout_constraintTop_toBottomOf="@id/btnDonate"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="24dp">
+
+                    <!-- Success Icon -->
+                    <ImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/ic_success_icon"
+                        android:contentDescription="Success Icon"
+                        app:tint="@color/colorPrimary" />
+
+                    <!-- Success Message Text -->
+                    <TextView
+                        android:id="@+id/tvSuccessMessage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="16dp"
+                        android:text="Donation Successful!"
+                        android:textColor="@android:color/black"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:gravity="center"/>
+
+                    <!-- Thank You Text -->
+                    <TextView
+                        android:id="@+id/tvThankYouMessage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="8dp"
+                        android:text="Thank you for your generous contribution!"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp"
+                        android:gravity="center"/>
+
+                    <!-- OK Button -->
+                    <Button
+                        android:id="@+id/btnSuccessOk"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="OK"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:textColor="@android:color/white"
+                        android:layout_marginTop="16dp"
+                        android:layout_gravity="center"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
 
             <!-- Progress Bar (shown while processing) -->
             <ProgressBar
@@ -90,8 +210,11 @@
                 app:layout_constraintTop_toBottomOf="@id/btnDonate"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
+
+    <!-- NavigationView for Drawer -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigation_view"
         android:layout_width="wrap_content"

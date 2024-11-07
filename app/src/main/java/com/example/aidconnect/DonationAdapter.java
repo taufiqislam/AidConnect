@@ -17,7 +17,7 @@ public class DonationAdapter extends RecyclerView.Adapter<DonationAdapter.Donati
 
     private List<Donation> donationList;
     private Context context;
-    private FirebaseFirestore db;  // Firebase Firestore instance
+    private FirebaseFirestore db;
 
     public DonationAdapter(List<Donation> donationList, Context context) {
         this.donationList = donationList;

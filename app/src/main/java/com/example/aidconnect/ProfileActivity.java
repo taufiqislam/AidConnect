@@ -1,7 +1,10 @@
 package com.example.aidconnect;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +18,8 @@ public class ProfileActivity extends BaseActivity {
     private FirebaseFirestore db;
     private FirebaseAuth auth;
     private TextView firstNameTextView, lastNameTextView, emailTextView, phoneTextView;
+
+    private Button campaignButton,donationButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +41,24 @@ public class ProfileActivity extends BaseActivity {
         lastNameTextView = findViewById(R.id.textLastName);
         emailTextView = findViewById(R.id.textEmail);
         phoneTextView = findViewById(R.id.textPhone);
+        campaignButton=findViewById(R.id.btnMyCampaigns);
+        donationButton=findViewById(R.id.btnMyDonations);
+
+        campaignButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfileActivity.this,MyCampaignsActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        donationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfileActivity.this,MyDonationsActivity.class);
+                startActivity(intent);
+            }
+        });
 
         // Get user details from Firestore
         getUserDetails();
