@@ -80,10 +80,6 @@ public class BaseActivity extends AppCompatActivity {
                 {
                     openCampaigns();
                 }
-                else if(item.getItemId() == R.id.nav_settings)
-                {
-                    openSettings();
-                }
                 else if(item.getItemId() == R.id.nav_logout)
                 {
                     logout();
@@ -137,11 +133,6 @@ public class BaseActivity extends AppCompatActivity {
     private void openCampaigns() {
         Intent intent = new Intent(this, MyCampaignsActivity.class);
         startActivity(intent);
-    }
-
-    // Common method to open settings
-    protected void openSettings() {
-        // Handle the settings logic here, e.g., start the SettingsActivity
     }
 
     // Common method to handle logout

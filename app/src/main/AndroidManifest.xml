@@ -19,6 +19,9 @@
         android:theme="@style/Theme.AidConnect"
         tools:targetApi="31">
         <activity
+            android:name=".UpdateCampaignActivity"
+            android:exported="false" />
+        <activity
             android:name=".MyCampaignDetailsActivity"
             android:exported="false" />
         <activity
