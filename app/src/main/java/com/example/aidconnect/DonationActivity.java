@@ -1,16 +1,19 @@
 package com.example.aidconnect;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,6 +36,9 @@ public class DonationActivity extends BaseActivity {
 
     private String userId;
 
+    private ImageView imgBkash, imgNagad, imgRocket;
+    private String selectedMedium; // Store the selected medium name
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +54,14 @@ public class DonationActivity extends BaseActivity {
         btnDonate = findViewById(R.id.btnDonate);
         progressBar = findViewById(R.id.donationProgressBar);
         campaignTitleTV = findViewById(R.id.campaignTitle);
+
+        imgBkash = findViewById(R.id.imgBkash);
+        imgNagad = findViewById(R.id.imgNagad);
+        imgRocket = findViewById(R.id.imgRocket);
+
+        imgBkash.setOnClickListener(v -> selectMedium("Bkash"));
+        imgNagad.setOnClickListener(v -> selectMedium("Nagad"));
+        imgRocket.setOnClickListener(v -> selectMedium("Rocket"));
 
         Intent intent = getIntent();
         campaignId = intent.getStringExtra("campaignId");
@@ -74,6 +88,14 @@ public class DonationActivity extends BaseActivity {
             processDonation(donationAmount);
         });
     }
+
+    private void selectMedium(String medium) {
+        selectedMedium = medium;
+        inputDonationAmount.setVisibility(View.VISIBLE);
+        btnDonate.setVisibility(View.VISIBLE);
+        Toast.makeText(this, "Selected: " + medium, Toast.LENGTH_SHORT).show();
+    }
+
 
     private void processDonation(int donationAmount) {
         progressBar.setVisibility(View.VISIBLE);
@@ -107,6 +129,29 @@ public class DonationActivity extends BaseActivity {
                     Toast.makeText(DonationActivity.this, "Donation failed!", Toast.LENGTH_SHORT).show();
                 });
     }
+
+    private void showDonationSuccessDialog() {
+        // Make sure to show the modal by changing visibility
+        CardView successModal = findViewById(R.id.successModal);
+        TextView tvSuccessMessage = findViewById(R.id.tvSuccessMessage);
+        TextView tvThankYouMessage = findViewById(R.id.tvThankYouMessage);
+        Button btnSuccessOk = findViewById(R.id.btnSuccessOk);
+
+        // Set the success message text
+        tvSuccessMessage.setText("Donation Successful!");
+        tvThankYouMessage.setText("Thank you for your generous donation via " + selectedMedium + "!");
+
+        // Show the modal
+        successModal.setVisibility(View.VISIBLE);
+
+        // Handle the OK button click
+        btnSuccessOk.setOnClickListener(v -> {
+            // Hide the modal when the user clicks OK
+            successModal.setVisibility(View.GONE);
+            inputDonationAmount.setText(""); // Clear input field for next donation
+        });
+    }
+
 
     private void updateCampaignAfterDonation(int donationAmount) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();

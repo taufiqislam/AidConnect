@@ -9,7 +9,12 @@ public class Donation {
     private Timestamp donationTime;
     private String transactionId;
 
-    public Donation() {}
+    public Donation(String userId, String campaignId, int donationAmount, Timestamp now, String transactionId, String selectedMedium) {}
+
+    // No-argument constructor required for Firestore deserialization
+    public Donation() {
+        // Empty constructor
+    }
 
     public Donation(String donorId, String campaignId, int donationAmount, Timestamp donationTime, String transactionId)
     {
