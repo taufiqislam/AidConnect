@@ -7,16 +7,14 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -28,13 +26,13 @@ public class MyCampaignDetailsActivity extends BaseActivity {
     private ProgressBar donationProgressBar;
     private Button editButton;
     private FirebaseFirestore db;
+    private ListenerRegistration campaignListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_campaign_details);
 
-        // Firebase initialization, drawer setup, and other views initialization
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
@@ -42,21 +40,11 @@ public class MyCampaignDetailsActivity extends BaseActivity {
             setupDrawer();
         }
 
-        // Get the campaign details from the intent
+        // Get the campaignId from the intent
         Intent intent = getIntent();
-        Campaign campaign = (Campaign) intent.getSerializableExtra("campaign");
-        String id = intent.getStringExtra("campaignId");
-        String title = campaign.getTitle();
-        String description = campaign.getDescription();
-        String creatorId = campaign.getCreatorId();
-        int imageResId = campaign.getImage();
-        int donationTarget = campaign.getDonationTarget();
-        int currentDonation = campaign.getCurrentDonation();
-        int donorCount = campaign.getDonorCount();
-        Date deadline = campaign.getCampaignDeadline();
-        Date creationDate = campaign.getCampaignCreationDate();
+        String campaignId = intent.getStringExtra("campaignId");
 
-        // Find views by ID
+        // Initialize UI elements
         campaignImageView = findViewById(R.id.campaignImageView);
         campaignTitle = findViewById(R.id.campaignTitle);
         campaignDescription = findViewById(R.id.campaignDescription);
@@ -67,32 +55,57 @@ public class MyCampaignDetailsActivity extends BaseActivity {
         tvDonorCount = findViewById(R.id.tvDonorCount);
         tvDaysLeft = findViewById(R.id.tvDaysLeft);
 
-        // Set the campaign details in the views
-        Glide.with(this)
-                .load(campaign.getImageUrl()) // Assuming this is a URL, change if it's a resource ID
-                .placeholder(R.drawable.sample) // A placeholder image while loading
-                .error(R.drawable.sample) // An error image in case loading fails
-                .into(campaignImageView);
-        //campaignImageView.setImageResource(imageResId);
-        campaignTitle.setText(title);
-        campaignDescription.setText(description);
+        // Fetch campaign details and listen for updates
+        fetchCampaignDetails(campaignId);
 
-        // Calculate and set the progress bar
-        int progress = (currentDonation * 100) / donationTarget;
-        donationProgressBar.setProgress(progress);
-
-        // Set the statistics
-        tvCurrentDonation.setText("Donation: TK" + currentDonation + "\nDonation Goal: TK" + donationTarget);
-        tvDonorCount.setText(donorCount + "\nDonors");
-        tvDaysLeft.setText(getDaysLeft(deadline) + "\nDays Left");
-
-        // Fetch and set the creator's name
-        fetchCreatorName(creatorId);
-
-        // Set up the donate button click listener
+        editButton.setOnClickListener(v -> {
+            Intent updateIntent = new Intent(MyCampaignDetailsActivity.this, UpdateCampaignActivity.class);
+            updateIntent.putExtra("campaignId", campaignId);
+            startActivity(updateIntent);
+        });
     }
 
-    // Helper method to calculate days left until the deadline
+    private void fetchCampaignDetails(String campaignId) {
+        DocumentReference campaignRef = db.collection("campaigns").document(campaignId);
+
+        // Set up snapshot listener to listen for real-time updates
+        campaignListener = campaignRef.addSnapshotListener((documentSnapshot, e) -> {
+            if (e != null) {
+                campaignTitle.setText("Failed to load campaign details");
+                return;
+            }
+
+            if (documentSnapshot != null && documentSnapshot.exists()) {
+                Campaign campaign = documentSnapshot.toObject(Campaign.class);
+                if (campaign != null) {
+                    updateUI(campaign);
+                }
+            }
+        });
+    }
+
+    private void updateUI(Campaign campaign) {
+        // Set image, title, description, and creator's name
+        Glide.with(this)
+                .load(campaign.getImageUrl())
+                .placeholder(R.drawable.sample)
+                .error(R.drawable.sample)
+                .into(campaignImageView);
+
+        campaignTitle.setText(campaign.getTitle());
+        campaignDescription.setText(campaign.getDescription());
+
+        fetchCreatorName(campaign.getCreatorId());
+
+        // Calculate and display progress
+        int progress = (campaign.getCurrentDonation() * 100) / campaign.getDonationTarget();
+        donationProgressBar.setProgress(progress);
+
+        tvCurrentDonation.setText("Donation: TK" + campaign.getCurrentDonation() + "\nDonation Goal: TK" + campaign.getDonationTarget());
+        tvDonorCount.setText(campaign.getDonorCount() + "\nDonors");
+        tvDaysLeft.setText(getDaysLeft(campaign.getCampaignDeadline()) + "\nDays Left");
+    }
+
     private long getDaysLeft(Date deadline) {
         long diffInMillis = deadline.getTime() - new Date().getTime();
         return TimeUnit.MILLISECONDS.toDays(diffInMillis);
@@ -112,4 +125,12 @@ public class MyCampaignDetailsActivity extends BaseActivity {
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Detach listener to avoid memory leaks
+        if (campaignListener != null) {
+            campaignListener.remove();
+        }
+    }
 }

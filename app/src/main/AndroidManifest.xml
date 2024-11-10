@@ -28,7 +28,9 @@
             </intent-filter>/>
 
         </activity>
-
+        <activity
+            android:name=".UpdateCampaignActivity"
+            android:exported="false" />
         <activity
             android:name=".MyCampaignDetailsActivity"
             android:exported="false" />

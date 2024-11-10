@@ -58,7 +58,7 @@ public class MyCampaignAdapter extends RecyclerView.Adapter<MyCampaignAdapter.My
                 .into(holder.campaignImage);
 
         holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(context, CampaignDetailsActivity.class);
+            Intent intent = new Intent(context, MyCampaignDetailsActivity.class);
             intent.putExtra("campaign", campaign);
             intent.putExtra("campaignId", campaignId);
             context.startActivity(intent);

@@ -2,6 +2,8 @@ package com.example.aidconnect;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -9,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -117,6 +120,52 @@ public class CampaignActivity extends BaseActivity {
                 startActivity(intent);
             }
         });
+
+
+
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_search, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                filterCampaigns(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (newText.isEmpty()) {
+                    sortCampaignsByDonorCount(); // Reset to default sort if search is empty
+                } else {
+                    filterCampaigns(newText);
+                }
+                return false;
+            }
+        });
+
+        return true;
+    }
+
+    private void filterCampaigns(String query) {
+        filteredCampaigns.clear();
+        if (query.isEmpty()) {
+            filteredCampaigns.addAll(allCampaigns);
+        } else {
+            String lowerCaseQuery = query.toLowerCase();
+            for (Campaign campaign : allCampaigns) {
+                if (campaign.getTitle().toLowerCase().contains(lowerCaseQuery) ||
+                        campaign.getDescription().toLowerCase().contains(lowerCaseQuery)) {
+                    filteredCampaigns.add(campaign);
+                }
+            }
+        }
+        campaignAdapter.notifyDataSetChanged();
     }
 
     // Fetch campaigns from Firestore
