@@ -6,7 +6,6 @@ public class User {
     private String email;
     private String phoneNumber;
 
-    // Default constructor required for Firestore
     public User() {
     }
 
@@ -17,7 +16,6 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-    // Getters and setters for each field
     public String getFirstName() {
         return firstName;
     }

@@ -29,26 +29,21 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Initialize Firebase Auth and Firestore
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
     }
 
-    // Set up the drawer and common actions for profile, settings, and logout
     protected void setupDrawer() {
-        // Find the toolbar and set it as the action bar
         Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);  // This sets the toolbar as the ActionBar
+        setSupportActionBar(toolbar);
 
-        // Now get the ActionBar (after setting the toolbar) and enable the home button
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);  // Enable the back/home button
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
+
         }
 
-        // Set up the drawer
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.navigation_view);
 
@@ -60,15 +55,17 @@ public class BaseActivity extends AppCompatActivity {
             Log.e("BaseActivity", "DrawerLayout is null! Check your layout file.");
         }
 
-        // Fetch and display user details in the navigation header
         if (navigationView != null) {
             View headerView = navigationView.getHeaderView(0);
             TextView tvUserName = headerView.findViewById(R.id.tvUserName);
             setUserName(tvUserName);
 
-            // Handle navigation item clicks (profile, settings, logout)
             navigationView.setNavigationItemSelectedListener(item -> {
-                if(item.getItemId() == R.id.nav_profile)
+                if(item.getItemId() == R.id.nav_home)
+                {
+                    openHome();
+                }
+                else if(item.getItemId() == R.id.nav_profile)
                 {
                     openProfile();
                 }
@@ -90,15 +87,15 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
+    private void openHome() {
+        Intent intent = new Intent(this, CampaignActivity.class);
+        startActivity(intent);
+    }
 
 
-
-    // Method to set the username in the navigation drawer header
     private void setUserName(TextView tvUserName) {
-        // Get the current user's ID
         String currentUserId = auth.getCurrentUser().getUid();
 
-        // Fetch user details from Firestore
         db.collection("users").document(currentUserId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -135,7 +132,6 @@ public class BaseActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    // Common method to handle logout
     protected void logout() {
         FirebaseAuth.getInstance().signOut();
         Intent intent = new Intent(this, CampaignActivity.class);
@@ -144,7 +140,6 @@ public class BaseActivity extends AppCompatActivity {
         finish();
     }
 
-    // Handle the ActionBar toggle
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (toggle != null && toggle.onOptionsItemSelected(item)) {

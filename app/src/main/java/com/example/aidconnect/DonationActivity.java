@@ -33,6 +33,7 @@ public class DonationActivity extends BaseActivity {
     private TextView campaignTitleTV;
     private String campaignId;
     private String campaignTitle;
+    private View dimBackground;
 
     private String userId;
 
@@ -50,10 +51,12 @@ public class DonationActivity extends BaseActivity {
             setupDrawer();
         }
 
+
         inputDonationAmount = findViewById(R.id.inputDonationAmount);
         btnDonate = findViewById(R.id.btnDonate);
         progressBar = findViewById(R.id.donationProgressBar);
         campaignTitleTV = findViewById(R.id.campaignTitle);
+        dimBackground = findViewById(R.id.dimBackground);
 
         imgBkash = findViewById(R.id.imgBkash);
         imgNagad = findViewById(R.id.imgNagad);
@@ -99,28 +102,17 @@ public class DonationActivity extends BaseActivity {
 
     private void processDonation(int donationAmount) {
         progressBar.setVisibility(View.VISIBLE);
-
-        // You would typically call SSLCOMMERZ here to process the payment
-        // For now, let's assume the payment is successful and proceed to save the donation data
-
-        // Generate a dummy transaction ID
         String transactionId = "txn_" + System.currentTimeMillis();
-
-        // Save donation details to Firestore
         saveDonationToFirestore(donationAmount, transactionId);
     }
 
     private void saveDonationToFirestore(int donationAmount, String transactionId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        // Create a new donation object
         Donation donation = new Donation(userId, campaignId, donationAmount, Timestamp.now(), transactionId);
-
-        // Save donation data in Firestore under a "donations" collection
         db.collection("donations")
                 .add(donation)
                 .addOnSuccessListener(documentReference -> {
-                    // Update the campaign details
                     updateCampaignAfterDonation(donationAmount);
                 })
                 .addOnFailureListener(e -> {
@@ -131,24 +123,23 @@ public class DonationActivity extends BaseActivity {
     }
 
     private void showDonationSuccessDialog() {
-        // Make sure to show the modal by changing visibility
         CardView successModal = findViewById(R.id.successModal);
         TextView tvSuccessMessage = findViewById(R.id.tvSuccessMessage);
         TextView tvThankYouMessage = findViewById(R.id.tvThankYouMessage);
         Button btnSuccessOk = findViewById(R.id.btnSuccessOk);
 
-        // Set the success message text
         tvSuccessMessage.setText("Donation Successful!");
         tvThankYouMessage.setText("Thank you for your generous donation via " + selectedMedium + "!");
 
-        // Show the modal
         successModal.setVisibility(View.VISIBLE);
-
-        // Handle the OK button click
+        dimBackground.setVisibility(View.VISIBLE);
         btnSuccessOk.setOnClickListener(v -> {
-            // Hide the modal when the user clicks OK
             successModal.setVisibility(View.GONE);
-            inputDonationAmount.setText(""); // Clear input field for next donation
+            dimBackground.setVisibility(View.GONE);
+            inputDonationAmount.setText("");
+            Intent intent = new Intent(DonationActivity.this, CampaignActivity.class);
+            startActivity(intent);
+            finish();
         });
     }
 
@@ -157,7 +148,6 @@ public class DonationActivity extends BaseActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         progressBar.setVisibility(View.VISIBLE);
 
-        // Check if the user has already donated to this campaign
         db.collection("donations")
                 .whereEqualTo("donorId", userId)
                 .whereEqualTo("campaignId", campaignId)
@@ -166,35 +156,23 @@ public class DonationActivity extends BaseActivity {
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     boolean hasDonatedBefore = queryDocumentSnapshots.size() > 1;
 
-                    // Reference to the campaign document
                     db.collection("campaigns").document(campaignId)
                             .get()
                             .addOnSuccessListener(documentSnapshot -> {
                                 if (documentSnapshot.exists()) {
-                                    // Retrieve current values
                                     int currentDonation = documentSnapshot.getLong("currentDonation").intValue();
                                     int donorCount = documentSnapshot.getLong("donorCount").intValue();
-
-                                    // Prepare updates
                                     Map<String, Object> updates = new HashMap<>();
                                     updates.put("currentDonation", currentDonation + donationAmount);
-
-                                    // If the user hasn't donated before, increment donorCount
                                     if (!hasDonatedBefore) {
                                         updates.put("donorCount", donorCount + 1);
                                     }
-
-                                    // Update the campaign document with new donation data
                                     db.collection("campaigns").document(campaignId)
                                             .update(updates)
                                             .addOnSuccessListener(aVoid -> {
                                                 progressBar.setVisibility(View.GONE);
                                                 Toast.makeText(DonationActivity.this, "Donation successful!", Toast.LENGTH_SHORT).show();
-
-                                                // Redirect back to campaign page or show confirmation
-                                                Intent intent = new Intent(DonationActivity.this, CampaignActivity.class);
-                                                startActivity(intent);
-                                                finish();
+                                                showDonationSuccessDialog();
                                             })
                                             .addOnFailureListener(e -> {
                                                 progressBar.setVisibility(View.GONE);

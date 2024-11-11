@@ -44,7 +44,7 @@ public class CreateCampaignActivity extends BaseActivity {
     private FirebaseAuth mAuth;
     private String selectedCategory = "";
     private Map<String, String> paymentMethods = new HashMap<>();
-    private Uri imageUri;  // To store the image URI for later use
+    private Uri imageUri;
     private FirebaseStorage storage;
 
     @Override
@@ -58,12 +58,11 @@ public class CreateCampaignActivity extends BaseActivity {
             setupDrawer();
         }
 
-        // Initialize views
         etTitle = findViewById(R.id.etTitle);
         etDescription = findViewById(R.id.etDescription);
         etDeadline = findViewById(R.id.etDeadline);
         etDonationTarget = findViewById(R.id.etDonationTarget);
-        etDonationNumber = findViewById(R.id.etDonationNumber); // Initially hidden
+        etDonationNumber = findViewById(R.id.etDonationNumber);
         spCategory = findViewById(R.id.spCategory);
         spDonationMedium = findViewById(R.id.spDonationMedium);
         ivSelectedImage = findViewById(R.id.ivSelectedImage);
@@ -73,13 +72,11 @@ public class CreateCampaignActivity extends BaseActivity {
         db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
 
-        // Set up the spinner for categories
         String[] campaignCategories = getResources().getStringArray(R.array.campaign_categories);
         ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, campaignCategories);
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spCategory.setAdapter(categoryAdapter);
 
-        // Handle Category Spinner selection
         spCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -92,35 +89,30 @@ public class CreateCampaignActivity extends BaseActivity {
             }
         });
 
-        // Set up date picker for campaign deadline
         etDeadline.setOnClickListener(v -> showDatePickerDialog());
 
-        // Handle Payment Method Spinner selection
         etDonationNumber.setVisibility(View.GONE);
 
-        // Load the donation mediums from strings.xml
         String[] donationMediums = getResources().getStringArray(R.array.donation_mediums);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, donationMediums);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spDonationMedium.setAdapter(adapter);
 
-        // Handle Donation Medium Spinner selection
         spDonationMedium.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 String selectedMedium = spDonationMedium.getSelectedItem().toString();
-                // Check the selected item and set visibility accordingly
                 if (selectedMedium.equals("None")) {
-                    etDonationNumber.setVisibility(View.GONE); // Hide EditText if "none" is chosen
+                    etDonationNumber.setVisibility(View.GONE);
                 } else {
-                    etDonationNumber.setVisibility(View.VISIBLE); // Show EditText for valid selections
+                    etDonationNumber.setVisibility(View.VISIBLE);
                     etDonationNumber.setHint("Enter " + selectedMedium + " number");
                 }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
-                etDonationNumber.setVisibility(View.GONE); // Hide if nothing is selected
+                etDonationNumber.setVisibility(View.GONE);
             }
         });
 
@@ -143,7 +135,7 @@ public class CreateCampaignActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            imageUri = data.getData(); // Get the URI of the selected image
+            imageUri = data.getData();
             ivSelectedImage.setImageURI(imageUri);
             ivSelectedImage.setVisibility(View.VISIBLE);
         }
@@ -185,21 +177,16 @@ public class CreateCampaignActivity extends BaseActivity {
             return;
         }
 
-        // Get the image file reference in Firebase Storage
         StorageReference imageRef = storage.getReference("campaign_images/" + System.currentTimeMillis() + ".jpg");
 
-        // Upload the image to Firebase Storage
         imageRef.putFile(imageUri).addOnSuccessListener(taskSnapshot -> {
-            // Get the download URL of the uploaded image
             imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
                 String imageUrl = uri.toString();
 
-                // Create Campaign object with the image URL
                 String creatorId = mAuth.getCurrentUser().getUid();
                 Campaign campaign = new Campaign(title, description, new Date(), campaignDeadline, donationTarget, 0,
                         selectedCategory, creatorId, paymentMethods, imageUrl);
 
-                // Add campaign to Firestore
                 db.collection("campaigns").add(campaign).addOnSuccessListener(documentReference -> {
                     Toast.makeText(CreateCampaignActivity.this, "Campaign created successfully", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(CreateCampaignActivity.this, CampaignActivity.class));
@@ -220,7 +207,7 @@ public class CreateCampaignActivity extends BaseActivity {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy"); // Define the format of the date
         Date date = null;
         try {
-            date = dateFormat.parse(dateStr); // Parse the string to a Date object
+            date = dateFormat.parse(dateStr);
         } catch (ParseException e) {
             e.printStackTrace();
         }

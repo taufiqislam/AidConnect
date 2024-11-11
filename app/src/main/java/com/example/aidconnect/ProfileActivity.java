@@ -28,7 +28,6 @@ public class ProfileActivity extends BaseActivity {
 
 
 
-        // Initialize Firestore and FirebaseAuth
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = auth.getCurrentUser();
@@ -60,7 +59,6 @@ public class ProfileActivity extends BaseActivity {
             }
         });
 
-        // Get user details from Firestore
         getUserDetails();
     }
 
@@ -71,13 +69,11 @@ public class ProfileActivity extends BaseActivity {
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        // Map Firestore data to User object
                         String firstName = documentSnapshot.getString("firstName");
                         String lastName = documentSnapshot.getString("lastName");
                         String email = documentSnapshot.getString("email");
                         String phone = documentSnapshot.getString("phoneNumber");
 
-                        // Set user details to UI elements
                         firstNameTextView.setText(firstName);
                         lastNameTextView.setText(lastName);
                         emailTextView.setText(email);

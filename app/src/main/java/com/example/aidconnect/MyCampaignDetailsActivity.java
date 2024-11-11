@@ -55,7 +55,6 @@ public class MyCampaignDetailsActivity extends BaseActivity {
         tvDonorCount = findViewById(R.id.tvDonorCount);
         tvDaysLeft = findViewById(R.id.tvDaysLeft);
 
-        // Fetch campaign details and listen for updates
         fetchCampaignDetails(campaignId);
 
         editButton.setOnClickListener(v -> {
@@ -68,7 +67,6 @@ public class MyCampaignDetailsActivity extends BaseActivity {
     private void fetchCampaignDetails(String campaignId) {
         DocumentReference campaignRef = db.collection("campaigns").document(campaignId);
 
-        // Set up snapshot listener to listen for real-time updates
         campaignListener = campaignRef.addSnapshotListener((documentSnapshot, e) -> {
             if (e != null) {
                 campaignTitle.setText("Failed to load campaign details");
@@ -85,7 +83,6 @@ public class MyCampaignDetailsActivity extends BaseActivity {
     }
 
     private void updateUI(Campaign campaign) {
-        // Set image, title, description, and creator's name
         Glide.with(this)
                 .load(campaign.getImageUrl())
                 .placeholder(R.drawable.sample)
@@ -128,7 +125,6 @@ public class MyCampaignDetailsActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // Detach listener to avoid memory leaks
         if (campaignListener != null) {
             campaignListener.remove();
         }

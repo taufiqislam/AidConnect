@@ -4,13 +4,24 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp"
-    android:gravity="bottom"
-    android:background="@color/colorPrimary">
+    android:background="@color/colorPrimary"> <!-- Add a background image -->
+
+    <ImageView
+        android:id="@+id/ivUserAvatar"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_gravity="left"
+        android:src="@drawable/ic_user_avatar"
+        android:contentDescription="User Avatar"
+        android:padding="8dp"
+        android:elevation="4dp"/>
 
     <TextView
         android:id="@+id/tvUserName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginTop="8dp"
         android:text="User Name"
         android:textColor="@android:color/white"
         android:textStyle="bold"

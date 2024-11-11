@@ -1,7 +1,5 @@
 package com.example.aidconnect;
 
-import static androidx.core.content.ContextCompat.startActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -10,12 +8,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.Date;
 import java.util.List;
@@ -23,13 +24,13 @@ import java.util.concurrent.TimeUnit;
 
 public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.CampaignViewHolder> {
     private List<Campaign> campaignList;
-    private List<String> campaignIds;
     private Context context;
+    private FirebaseFirestore db;
 
-    public CampaignAdapter(List<Campaign> campaignList, List<String> campaignIds, Context context) {
+    public CampaignAdapter(List<Campaign> campaignList, Context context) {
         this.campaignList = campaignList;
-        this.campaignIds = campaignIds;
         this.context = context;
+        this.db = FirebaseFirestore.getInstance(); // Initialize Firestore
     }
 
     @NonNull
@@ -42,50 +43,75 @@ public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.Campai
     @Override
     public void onBindViewHolder(@NonNull CampaignViewHolder holder, int position) {
         Campaign campaign = campaignList.get(position);
-        String campaignId = campaignIds.get(position);
         Date deadline = campaign.getCampaignDeadline();
-
         long daysLeft = getDaysLeft(deadline);
 
-        // Set data to UI elements
         holder.campaignTitle.setText(campaign.getTitle());
         holder.campaignDeadline.setText("Deadline: " + daysLeft + " days left");
         holder.campaignDonors.setText("Donors: " + campaign.getDonorCount());
 
-        // Load image using Glide
         Glide.with(context)
-                .load(campaign.getImageUrl()) // Assuming this is a URL, change if it's a resource ID
-                .placeholder(R.drawable.sample) // A placeholder image while loading
-                .error(R.drawable.sample) // An error image in case loading fails
+                .load(campaign.getImageUrl())
+                .placeholder(R.drawable.sample)
+                .error(R.drawable.sample)
                 .into(holder.campaignImage);
 
-        // Action button for donations
-        holder.campaignActionButton.setOnClickListener(v -> {
-            FirebaseAuth mAuth = FirebaseAuth.getInstance();
-            if (mAuth.getCurrentUser() != null) {
-                Intent intent = new Intent(context, DonationActivity.class);
-                intent.putExtra("campaignId", campaignId);
-                intent.putExtra("campaignTitle", campaign.getTitle());
-                context.startActivity(intent);
-            } else {
-                // User is not logged in, redirect to LoginActivity
-                Intent intent = new Intent(context,LoginActivity.class);
-                context.startActivity(intent);
-            }
+        // Set up action button
+        holder.campaignActionButton.setOnClickListener(v -> handleActionButtonClick(campaign));
 
-        });
-
-        holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(context, CampaignDetailsActivity.class);
-            intent.putExtra("campaign", campaign);
-            intent.putExtra("campaignId", campaignId);
-            context.startActivity(intent);
-        });
+        // Set up item click for detailed view
+        holder.itemView.setOnClickListener(v -> openCampaignDetails(campaign));
     }
 
     private long getDaysLeft(Date deadline) {
-        long diffInMillis = deadline.getTime() - new Date().getTime(); // Get the difference in milliseconds
-        return TimeUnit.MILLISECONDS.toDays(diffInMillis); // Convert milliseconds to days
+        long diffInMillis = deadline.getTime() - new Date().getTime();
+        return TimeUnit.MILLISECONDS.toDays(diffInMillis);
+    }
+
+    private void handleActionButtonClick(Campaign campaign) {
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        if (mAuth.getCurrentUser() != null) {
+            // Fetch campaign ID based on title for DonationActivity
+            db.collection("campaigns")
+                    .whereEqualTo("title", campaign.getTitle())
+                    .limit(1)
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            String campaignId = queryDocumentSnapshots.getDocuments().get(0).getId();
+                            Intent intent = new Intent(context, DonationActivity.class);
+                            intent.putExtra("campaignId", campaignId);
+                            intent.putExtra("campaignTitle", campaign.getTitle());
+                            context.startActivity(intent);
+                        } else {
+                            Toast.makeText(context, "Campaign not found", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(e -> Toast.makeText(context, "Error fetching campaign ID", Toast.LENGTH_SHORT).show());
+        } else {
+            Intent intent = new Intent(context, LoginActivity.class);
+            context.startActivity(intent);
+        }
+    }
+
+    private void openCampaignDetails(Campaign campaign) {
+        // Fetch campaign ID based on title for CampaignDetailsActivity
+        db.collection("campaigns")
+                .whereEqualTo("title", campaign.getTitle())
+                .limit(1)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        String campaignId = queryDocumentSnapshots.getDocuments().get(0).getId();
+                        Intent intent = new Intent(context, CampaignDetailsActivity.class);
+                        intent.putExtra("campaign", campaign);
+                        intent.putExtra("campaignId", campaignId);
+                        context.startActivity(intent);
+                    } else {
+                        Toast.makeText(context, "Campaign not found", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> Toast.makeText(context, "Error fetching campaign ID", Toast.LENGTH_SHORT).show());
     }
 
     @Override

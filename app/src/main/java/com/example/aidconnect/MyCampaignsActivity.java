@@ -24,21 +24,17 @@ public class MyCampaignsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_campaigns);
 
-        // Initialize Firebase Auth and Firestore
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
 
-        // Setup the drawer layout if user is logged in
         if (currentUser != null) {
             setupDrawer();
         }
 
-        // Initialize RecyclerView
         rvMyCampaigns = findViewById(R.id.rvMyCampaigns);
         rvMyCampaigns.setLayoutManager(new LinearLayoutManager(this));
 
-        // Fetch campaigns created by the logged-in user
         fetchUserCampaigns(currentUser != null ? currentUser.getUid() : null);
     }
 
@@ -62,7 +58,6 @@ public class MyCampaignsActivity extends BaseActivity {
                             userCampaigns.add(campaign);
                             campaignIds.add(campaignId);
                         }
-                        // Initialize and set adapter for RecyclerView
                         myCampaignAdapter = new MyCampaignAdapter(userCampaigns, campaignIds, this);
                         rvMyCampaigns.setAdapter(myCampaignAdapter);
                     } else {

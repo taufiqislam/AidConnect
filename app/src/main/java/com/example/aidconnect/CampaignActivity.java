@@ -57,17 +57,14 @@ public class CampaignActivity extends BaseActivity {
             setupDrawer();
         }
 
-        // Initialize Firestore
         db = FirebaseFirestore.getInstance();
 
         tabLayout = findViewById(R.id.tabLayout);
         rvCampaigns = findViewById(R.id.rvCampaigns);
         rvCampaigns.setLayoutManager(new LinearLayoutManager(this));
 
-        // Fetch campaigns from Firestore
         fetchCampaignsFromFirestore();
 
-        // Setup tab layout
 
         tabLayout.addTab(tabLayout.newTab().setText("Popular"));
         tabLayout.addTab(tabLayout.newTab().setText("Newly Added"));
@@ -79,13 +76,13 @@ public class CampaignActivity extends BaseActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
                     case 0:
-                        sortCampaignsByDonorCount(); // Newly added
+                        sortCampaignsByDonorCount();
                         break;
                     case 1:
-                        sortCampaignsByCreationDate(); // Popular
+                        sortCampaignsByCreationDate();
                         break;
                     case 2:
-                        sortCampaignsByDeadline(); // Ending soon
+                        sortCampaignsByDeadline();
                         break;
                 }
             }
@@ -141,7 +138,7 @@ public class CampaignActivity extends BaseActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
                 if (newText.isEmpty()) {
-                    sortCampaignsByDonorCount(); // Reset to default sort if search is empty
+                    sortCampaignsByDonorCount();
                 } else {
                     filterCampaigns(newText);
                 }
@@ -168,25 +165,21 @@ public class CampaignActivity extends BaseActivity {
         campaignAdapter.notifyDataSetChanged();
     }
 
-    // Fetch campaigns from Firestore
     private void fetchCampaignsFromFirestore() {
         CollectionReference campaignsRef = db.collection("campaigns");
 
         campaignsRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                allCampaigns.clear(); // Clear previous data
+                allCampaigns.clear();
                 for (QueryDocumentSnapshot document : task.getResult()) {
-                    // Convert Firestore document to Campaign object
                     Campaign campaign = document.toObject(Campaign.class);
                     String campaignId = document.getId();
 
-                    // Add campaign to list
                     allCampaigns.add(campaign);
-                    campaignIds.add(campaignId);
                 }
-                // Initially show all campaigns
+
                 filteredCampaigns.addAll(allCampaigns);
-                campaignAdapter = new CampaignAdapter(filteredCampaigns, campaignIds, this);
+                campaignAdapter = new CampaignAdapter(filteredCampaigns, this);
                 rvCampaigns.setAdapter(campaignAdapter);
                 sortCampaignsByDonorCount();
             } else {
@@ -195,7 +188,6 @@ public class CampaignActivity extends BaseActivity {
         });
     }
 
-    // Sorting method for popular campaigns (by donor count)
     private void sortCampaignsByDonorCount() {
         filteredCampaigns.clear();
         filteredCampaigns.addAll(allCampaigns);

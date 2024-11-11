@@ -6,13 +6,17 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
+
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -37,11 +41,18 @@ public class UpdateCampaignActivity extends BaseActivity {
     private Map<String, String> paymentMethods = new HashMap<>();
     private Uri imageUri;
     private String campaignId;
+    private Campaign campaign;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_campaign);
+        db = FirebaseFirestore.getInstance();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = auth.getCurrentUser();
+        if (currentUser != null) {
+            setupDrawer();
+        }
 
         setupViews();
 
@@ -84,7 +95,7 @@ public class UpdateCampaignActivity extends BaseActivity {
     private void fetchCampaignDetails(String campaignId) {
         db.collection("campaigns").document(campaignId).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
-                Campaign campaign = documentSnapshot.toObject(Campaign.class);
+                campaign = documentSnapshot.toObject(Campaign.class);
                 if (campaign != null) {
                     populateCampaignData(campaign);
                 }
@@ -99,10 +110,26 @@ public class UpdateCampaignActivity extends BaseActivity {
         etDescription.setText(campaign.getDescription());
         etDeadline.setText(new SimpleDateFormat("dd/MM/yyyy").format(campaign.getCampaignDeadline()));
         etDonationTarget.setText(String.valueOf(campaign.getDonationTarget()));
-        ivSelectedImage.setImageURI(Uri.parse(campaign.getImageUrl()));
-        selectedCategory = campaign.getCategory();
-        paymentMethods = campaign.getPaymentMethods();
+        imageUri = Uri.parse(campaign.getImageUrl());
+
+        Glide.with(this)
+                .load(campaign.getImageUrl())
+                .placeholder(R.drawable.sample)
+                .into(ivSelectedImage);
+
+        int categoryPosition = ((ArrayAdapter<String>) spCategory.getAdapter()).getPosition(campaign.getCategory());
+        spCategory.setSelection(categoryPosition);
+
+        // Set the selected payment method
+        if (!campaign.getPaymentMethods().isEmpty()) {
+            String selectedMethod = campaign.getPaymentMethods().keySet().iterator().next();
+            etDonationNumber.setText(campaign.getPaymentMethods().get(selectedMethod));
+
+            int paymentMethodPosition = ((ArrayAdapter<String>) spDonationMedium.getAdapter()).getPosition(selectedMethod);
+            spDonationMedium.setSelection(paymentMethodPosition);
+        }
     }
+
 
     private void openFileChooser() {
         Intent intent = new Intent();
@@ -134,26 +161,42 @@ public class UpdateCampaignActivity extends BaseActivity {
         String description = etDescription.getText().toString();
         String deadlineStr = etDeadline.getText().toString();
         int donationTarget = Integer.parseInt(etDonationTarget.getText().toString());
-
         Date deadline = parseDate(deadlineStr);
 
+        // Validate required fields
         if (title.isEmpty() || description.isEmpty() || deadlineStr.isEmpty() || imageUri == null) {
             Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        StorageReference imageRef = storage.getReference("campaign_images/" + System.currentTimeMillis() + ".jpg");
-        imageRef.putFile(imageUri).addOnSuccessListener(taskSnapshot -> imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-            String imageUrl = uri.toString();
-            Campaign updatedCampaign = new Campaign(title, description, new Date(), deadline, donationTarget, 0,
-                    selectedCategory, FirebaseAuth.getInstance().getCurrentUser().getUid(), paymentMethods, imageUrl);
+        db.collection("campaigns").document(campaignId).get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
 
-            db.collection("campaigns").document(campaignId).set(updatedCampaign).addOnSuccessListener(aVoid -> {
-                Toast.makeText(this, "Campaign updated successfully", Toast.LENGTH_SHORT).show();
-                finish();
-            }).addOnFailureListener(e -> Toast.makeText(this, "Update failed", Toast.LENGTH_SHORT).show());
-        })).addOnFailureListener(e -> Toast.makeText(this, "Image upload failed", Toast.LENGTH_SHORT).show());
+                StorageReference imageRef = storage.getReference("campaign_images/" + System.currentTimeMillis() + ".jpg");
+                imageRef.putFile(imageUri).addOnSuccessListener(taskSnapshot -> imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                    String imageUrl = uri.toString();
+
+                    campaign.setTitle(title);
+                    campaign.setDescription(description);
+                    campaign.setCampaignDeadline(deadline);
+                    campaign.setDonationTarget(donationTarget);
+                    campaign.setCategory(selectedCategory);
+                    campaign.setPaymentMethods(paymentMethods);
+                    campaign.setImageUrl(imageUrl);
+
+                    db.collection("campaigns").document(campaignId).set(campaign)
+                            .addOnSuccessListener(aVoid -> {
+                                Toast.makeText(this, "Campaign updated successfully", Toast.LENGTH_SHORT).show();
+                                finish();
+                            }).addOnFailureListener(e -> Toast.makeText(this, "Update failed", Toast.LENGTH_SHORT).show());
+
+                })).addOnFailureListener(e -> Toast.makeText(this, "Image upload failed", Toast.LENGTH_SHORT).show());
+            } else {
+                Toast.makeText(this, "Campaign not found", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
+
 
     private Date parseDate(String dateStr) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");

@@ -45,16 +45,14 @@ public class MyCampaignAdapter extends RecyclerView.Adapter<MyCampaignAdapter.My
 
         long daysLeft = getDaysLeft(deadline);
 
-        // Set data to UI elements
         holder.campaignTitle.setText(campaign.getTitle());
         holder.campaignDeadline.setText("Deadline: " + daysLeft + " days left");
         holder.campaignDonors.setText("Donors: " + campaign.getDonorCount());
 
-        // Load image using Glide
         Glide.with(context)
-                .load(campaign.getImageUrl()) // Assuming this is a URL, change if it's a resource ID
-                .placeholder(R.drawable.sample) // A placeholder image while loading
-                .error(R.drawable.sample) // An error image in case loading fails
+                .load(campaign.getImageUrl())
+                .placeholder(R.drawable.sample)
+                .error(R.drawable.sample)
                 .into(holder.campaignImage);
 
         holder.itemView.setOnClickListener(v -> {
@@ -66,8 +64,8 @@ public class MyCampaignAdapter extends RecyclerView.Adapter<MyCampaignAdapter.My
     }
 
     private long getDaysLeft(Date deadline) {
-        long diffInMillis = deadline.getTime() - new Date().getTime(); // Get the difference in milliseconds
-        return TimeUnit.MILLISECONDS.toDays(diffInMillis); // Convert milliseconds to days
+        long diffInMillis = deadline.getTime() - new Date().getTime();
+        return TimeUnit.MILLISECONDS.toDays(diffInMillis);
     }
 
     @Override

@@ -22,7 +22,7 @@ public class DonationAdapter extends RecyclerView.Adapter<DonationAdapter.Donati
     public DonationAdapter(List<Donation> donationList, Context context) {
         this.donationList = donationList;
         this.context = context;
-        this.db = FirebaseFirestore.getInstance();  // Initialize Firestore
+        this.db = FirebaseFirestore.getInstance();
     }
 
     @NonNull
@@ -36,22 +36,20 @@ public class DonationAdapter extends RecyclerView.Adapter<DonationAdapter.Donati
     public void onBindViewHolder(@NonNull DonationViewHolder holder, int position) {
         Donation donation = donationList.get(position);
 
-        // Fetch campaign details using campaignId from Firestore
         fetchCampaignTitle(donation.getCampaignId(), holder.campaignTitle);
 
         // Set other donation data
         holder.donationAmount.setText("Amount: " + donation.getDonationAmount() + " BDT");
-        holder.donationDate.setText("Date: " + donation.getDonationTime().toDate().toString());  // Convert Firestore Timestamp to Date
+        holder.donationDate.setText("Date: " + donation.getDonationTime().toDate().toString());
         holder.transactionId.setText("Transaction ID: " + donation.getTransactionId().toString());
     }
 
-    // Helper method to fetch the campaign title from Firestore
     private void fetchCampaignTitle(String campaignId, TextView campaignTitleTextView) {
         db.collection("campaigns").document(campaignId).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
                         String campaignTitle = documentSnapshot.getString("title");
-                        campaignTitleTextView.setText(campaignTitle);  // Set the campaign title in the TextView
+                        campaignTitleTextView.setText(campaignTitle);
                     } else {
                         campaignTitleTextView.setText("Campaign not found");
                     }

@@ -60,7 +60,6 @@ public class LoginActivity extends AppCompatActivity {
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, task -> {
             if (task.isSuccessful()) {
                 FirebaseUser user = mAuth.getCurrentUser();
-                // Navigate to campaign page or main activity
                 startActivity(new Intent(LoginActivity.this, CampaignActivity.class));
             } else {
                 Toast.makeText(LoginActivity.this, "Authentication Failed", Toast.LENGTH_SHORT).show();

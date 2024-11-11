@@ -28,11 +28,10 @@ public class RegistrationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
 
-        // Initialize Firebase Auth and Firestore
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-        // Initialize UI elements
+
         firstNameInput = findViewById(R.id.inputFirstName);
         lastNameInput = findViewById(R.id.inputLastName);
         emailInput = findViewById(R.id.inputEmail);
@@ -41,7 +40,6 @@ public class RegistrationActivity extends AppCompatActivity {
         Button registerButton = findViewById(R.id.btnRegister);
         progressBar = findViewById(R.id.progressBar);
         TextView signInTextView = findViewById(R.id.loginTextView);
-        // Set button click listener
         registerButton.setOnClickListener(v -> registerUser());
 
         signInTextView.setOnClickListener(v -> {

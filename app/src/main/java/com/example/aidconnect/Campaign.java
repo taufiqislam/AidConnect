@@ -14,15 +14,13 @@ public class Campaign implements Serializable {
     private int currentDonation;
     private int image;  // Image resource or URL
     private String category;  // Newly Added, Popular, Urgency, Ending Soon
-    private String creatorId;  // Foreign key linking to the creator (user)
-    private Map<String, String> paymentMethods; // Map to hold payment method and number
+    private String creatorId;
+    private Map<String, String> paymentMethods;
     private String imageUrl;
 
     public Campaign() {
-        // This constructor is needed by Firestore for deserialization
     }
 
-    // Constructor with payment methods
     public Campaign(String title, String description, Date campaignCreationDate, Date campaignDeadline,
                     int donationTarget, int image, String category, String creatorId, Map<String, String> paymentMethods, String imageUrl) {
         this.title = title;
@@ -39,7 +37,6 @@ public class Campaign implements Serializable {
         this.imageUrl = imageUrl;
     }
 
-    // Getters and setters for all fields including payment methods
     public Map<String, String> getPaymentMethods() {
         return paymentMethods;
     }
@@ -48,10 +45,13 @@ public class Campaign implements Serializable {
         this.paymentMethods = paymentMethods;
     }
 
-    // Getters and Setters
 
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public String getTitle() {

@@ -1,7 +1,10 @@
 package com.example.aidconnect;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -31,7 +34,6 @@ public class CampaignDetailsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_campaign_details);
 
-        // Firebase initialization, drawer setup, and other views initialization
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
@@ -39,7 +41,6 @@ public class CampaignDetailsActivity extends BaseActivity {
             setupDrawer();
         }
 
-        // Get the campaign details from the intent
         Intent intent = getIntent();
         Campaign campaign = (Campaign) intent.getSerializableExtra("campaign");
         String id = intent.getStringExtra("campaignId");
@@ -53,7 +54,8 @@ public class CampaignDetailsActivity extends BaseActivity {
         Date deadline = campaign.getCampaignDeadline();
         Date creationDate = campaign.getCampaignCreationDate();
 
-        // Find views by ID
+        Log.d(TAG, "campaignId : " + id);
+
         campaignImageView = findViewById(R.id.campaignImageView);
         campaignTitle = findViewById(R.id.campaignTitle);
         campaignDescription = findViewById(R.id.campaignDescription);
@@ -64,29 +66,23 @@ public class CampaignDetailsActivity extends BaseActivity {
         tvDonorCount = findViewById(R.id.tvDonorCount);
         tvDaysLeft = findViewById(R.id.tvDaysLeft);
 
-        // Set the campaign details in the views
         Glide.with(this)
-                .load(campaign.getImageUrl()) // Assuming this is a URL, change if it's a resource ID
-                .placeholder(R.drawable.sample) // A placeholder image while loading
-                .error(R.drawable.sample) // An error image in case loading fails
+                .load(campaign.getImageUrl())
+                .placeholder(R.drawable.sample)
+                .error(R.drawable.sample)
                 .into(campaignImageView);
-        //campaignImageView.setImageResource(imageResId);
         campaignTitle.setText(title);
         campaignDescription.setText(description);
 
-        // Calculate and set the progress bar
         int progress = (currentDonation * 100) / donationTarget;
         donationProgressBar.setProgress(progress);
 
-        // Set the statistics
         tvCurrentDonation.setText("Donation: TK" + currentDonation + "\nDonation Goal: TK" + donationTarget);
         tvDonorCount.setText(donorCount + "\nDonors");
         tvDaysLeft.setText(getDaysLeft(deadline) + "\nDays Left");
 
-        // Fetch and set the creator's name
         fetchCreatorName(creatorId);
 
-        // Set up the donate button click listener
         donateButton.setOnClickListener(v -> {
             if (mAuth.getCurrentUser() != null) {
                 Intent donationIntent = new Intent(CampaignDetailsActivity.this, DonationActivity.class);
@@ -94,7 +90,6 @@ public class CampaignDetailsActivity extends BaseActivity {
                 donationIntent.putExtra("campaignTitle", title);
                 startActivity(donationIntent);
             } else {
-                // User is not logged in, redirect to LoginActivity
                 Intent loginIntent = new Intent(CampaignDetailsActivity.this, LoginActivity.class);
                 startActivity(loginIntent);
             }
@@ -102,7 +97,6 @@ public class CampaignDetailsActivity extends BaseActivity {
         });
     }
 
-    // Helper method to calculate days left until the deadline
     private long getDaysLeft(Date deadline) {
         long diffInMillis = deadline.getTime() - new Date().getTime();
         return TimeUnit.MILLISECONDS.toDays(diffInMillis);
