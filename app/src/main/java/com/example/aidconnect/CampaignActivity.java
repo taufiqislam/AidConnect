@@ -171,11 +171,12 @@ public class CampaignActivity extends BaseActivity {
         campaignsRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 allCampaigns.clear();
+                Date currentDate = new Date();
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     Campaign campaign = document.toObject(Campaign.class);
-                    String campaignId = document.getId();
-
-                    allCampaigns.add(campaign);
+                    if (campaign.getCampaignDeadline().after(currentDate)) {
+                        allCampaigns.add(campaign);
+                    }
                 }
 
                 filteredCampaigns.addAll(allCampaigns);

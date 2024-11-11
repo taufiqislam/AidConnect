@@ -42,6 +42,7 @@ public class UpdateCampaignActivity extends BaseActivity {
     private Uri imageUri;
     private String campaignId;
     private Campaign campaign;
+    private boolean isImageUpdated = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,6 +145,7 @@ public class UpdateCampaignActivity extends BaseActivity {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             imageUri = data.getData();
             ivSelectedImage.setImageURI(imageUri);
+            isImageUpdated = true;
         }
     }
 
@@ -171,26 +173,38 @@ public class UpdateCampaignActivity extends BaseActivity {
 
         db.collection("campaigns").document(campaignId).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
+                campaign.setTitle(title);
+                campaign.setDescription(description);
+                campaign.setCampaignDeadline(deadline);
+                campaign.setDonationTarget(donationTarget);
+                campaign.setCategory(selectedCategory);
+                campaign.setPaymentMethods(paymentMethods);
 
-                StorageReference imageRef = storage.getReference("campaign_images/" + System.currentTimeMillis() + ".jpg");
-                imageRef.putFile(imageUri).addOnSuccessListener(taskSnapshot -> imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                    String imageUrl = uri.toString();
+                if(isImageUpdated)
+                {
+                    StorageReference imageRef = storage.getReference("campaign_images/" + System.currentTimeMillis() + ".jpg");
+                    imageRef.putFile(imageUri).addOnSuccessListener(taskSnapshot -> imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                        String imageUrl = uri.toString();
+                        campaign.setImageUrl(imageUrl);
 
-                    campaign.setTitle(title);
-                    campaign.setDescription(description);
-                    campaign.setCampaignDeadline(deadline);
-                    campaign.setDonationTarget(donationTarget);
-                    campaign.setCategory(selectedCategory);
-                    campaign.setPaymentMethods(paymentMethods);
+                        db.collection("campaigns").document(campaignId).set(campaign)
+                                .addOnSuccessListener(aVoid -> {
+                                    Toast.makeText(this, "Campaign updated successfully", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                }).addOnFailureListener(e -> Toast.makeText(this, "Update failed", Toast.LENGTH_SHORT).show());
+
+                    })).addOnFailureListener(e -> Toast.makeText(this, "Image upload failed", Toast.LENGTH_SHORT).show());
+                }
+                else
+                {
+                    String imageUrl = imageUri.toString();
                     campaign.setImageUrl(imageUrl);
-
                     db.collection("campaigns").document(campaignId).set(campaign)
                             .addOnSuccessListener(aVoid -> {
                                 Toast.makeText(this, "Campaign updated successfully", Toast.LENGTH_SHORT).show();
                                 finish();
                             }).addOnFailureListener(e -> Toast.makeText(this, "Update failed", Toast.LENGTH_SHORT).show());
-
-                })).addOnFailureListener(e -> Toast.makeText(this, "Image upload failed", Toast.LENGTH_SHORT).show());
+                }
             } else {
                 Toast.makeText(this, "Campaign not found", Toast.LENGTH_SHORT).show();
             }
