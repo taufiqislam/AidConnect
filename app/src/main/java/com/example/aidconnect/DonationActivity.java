@@ -65,9 +65,9 @@ public class DonationActivity extends BaseActivity {
         imgNagad = findViewById(R.id.imgNagad);
         imgRocket = findViewById(R.id.imgRocket);
 
-        imgBkash.setOnClickListener(v -> selectMedium("Bkash"));
-        imgNagad.setOnClickListener(v -> selectMedium("Nagad"));
-        imgRocket.setOnClickListener(v -> selectMedium("Rocket"));
+        imgBkash.setOnClickListener(v -> selectMedium("Bkash" , imgBkash));
+        imgNagad.setOnClickListener(v -> selectMedium("Nagad" , imgNagad));
+        imgRocket.setOnClickListener(v -> selectMedium("Rocket" , imgRocket));
 
         Intent intent = getIntent();
         campaignId = intent.getStringExtra("campaignId");
@@ -95,8 +95,17 @@ public class DonationActivity extends BaseActivity {
         });
     }
 
-    private void selectMedium(String medium) {
+    private void selectMedium(String medium , ImageView selectedImageView) {
         selectedMedium = medium;
+
+        imgBkash.setSelected(false);
+        imgNagad.setSelected(false);
+        imgRocket.setSelected(false);
+
+        // Highlight the selected medium
+        selectedImageView.setSelected(true);
+
+
         inputMobileNumber.setVisibility(View.VISIBLE);
         inputDonationAmount.setVisibility(View.VISIBLE);
         btnDonate.setVisibility(View.VISIBLE);
