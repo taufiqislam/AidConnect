@@ -28,6 +28,8 @@ import java.util.Map;
 public class DonationActivity extends BaseActivity {
 
     private EditText inputDonationAmount;
+
+    private EditText inputMobileNumber;
     private Button btnDonate;
     private ProgressBar progressBar;
     private TextView campaignTitleTV;
@@ -53,6 +55,7 @@ public class DonationActivity extends BaseActivity {
 
 
         inputDonationAmount = findViewById(R.id.inputDonationAmount);
+        inputMobileNumber= findViewById(R.id.inputMobileNumber);
         btnDonate = findViewById(R.id.btnDonate);
         progressBar = findViewById(R.id.donationProgressBar);
         campaignTitleTV = findViewById(R.id.campaignTitle);
@@ -94,6 +97,7 @@ public class DonationActivity extends BaseActivity {
 
     private void selectMedium(String medium) {
         selectedMedium = medium;
+        inputMobileNumber.setVisibility(View.VISIBLE);
         inputDonationAmount.setVisibility(View.VISIBLE);
         btnDonate.setVisibility(View.VISIBLE);
         Toast.makeText(this, "Selected: " + medium, Toast.LENGTH_SHORT).show();

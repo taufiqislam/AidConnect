@@ -96,14 +96,47 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/tvEnterMobileNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Enter Your Number"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginTop="30dp"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/donation_mediums"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <EditText
+                android:id="@+id/inputMobileNumber"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="Enter Your Number"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/edittext_background_selector"
+                android:gravity="center"
+                android:inputType="number"
+                android:padding="10dp"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/tvEnterMobileNumber"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintWidth_percent="0.8"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
                 android:id="@+id/tvEnterAmount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Enter Donation Amount"
-                android:layout_marginTop="60dp"
-                android:layout_gravity="center"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"
                 android:visibility="gone"
-                app:layout_constraintTop_toBottomOf="@id/donation_mediums"
+                app:layout_constraintTop_toBottomOf="@id/inputMobileNumber"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 
@@ -112,15 +145,18 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:hint="Enter Donation Amount"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/edittext_background_selector"
                 android:gravity="center"
                 android:inputType="number"
-                android:padding="12dp"
+                android:padding="10dp"
                 android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@id/tvEnterAmount"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintWidth_percent="0.8"
                 android:layout_marginBottom="16dp" />
+
 
             <!-- Donate Button -->
             <!-- Donate Button -->
