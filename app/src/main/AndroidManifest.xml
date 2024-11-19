@@ -18,6 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AidConnect"
         tools:targetApi="31">
+
         <activity
             android:name=".SplashActivity"
             android:exported="true">

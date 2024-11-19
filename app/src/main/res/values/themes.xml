@@ -3,6 +3,10 @@
     <style name="Base.Theme.AidConnect" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <!-- Set status bar color -->
+        <item name="android:statusBarColor">@color/text_color</item>
+        <!-- Optional: Control the text/icons color on the status bar -->
+        <item name="android:windowLightStatusBar">true</item> <!-- Use light icons if the status bar color is light -->
     </style>
 
     <style name="Theme.AidConnect" parent="Base.Theme.AidConnect" />
