@@ -6,6 +6,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -127,6 +129,13 @@ public class CampaignActivity extends BaseActivity {
 
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setBackgroundColor(getResources().getColor(R.color.search_color));
+//        EditText searchEditText = searchView.findViewById(androidx.appcompat.R.id.search_src_text);
+//        searchEditText.setTextColor(getResources().getColor(R.color.text_color));
+//        searchEditText.setHintTextColor(getResources().getColor(R.color.text_color));
+//        ImageView searchCloseButton = searchView.findViewById(androidx.appcompat.R.id.search_close_btn);
+//        searchCloseButton.setColorFilter(getResources().getColor(R.color.text_color));
+
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

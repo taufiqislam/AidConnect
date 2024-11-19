@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@color/colorPrimary"> <!-- Add a background image -->
+    android:background="@color/color_header"> <!-- Add a background image -->
 
     <ImageView
         android:id="@+id/ivUserAvatar"

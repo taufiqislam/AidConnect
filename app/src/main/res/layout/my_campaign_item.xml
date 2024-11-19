@@ -27,6 +27,7 @@
                 android:text="Campaign Title"
                 android:textStyle="bold"
                 android:textSize="18sp"
+                android:textColor="@color/button_bg"
                 android:layout_marginBottom="4dp"/>
 
             <TextView
