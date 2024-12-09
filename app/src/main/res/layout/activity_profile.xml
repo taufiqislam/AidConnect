@@ -211,85 +211,29 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- See My Campaigns Card -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardMyCampaigns"
-                android:layout_width="250dp"
+            <TextView
+                android:id="@+id/donationStatistics"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:cardElevation="4dp"
-                app:cardCornerRadius="8dp"
-                app:layout_constraintStart_toStartOf="parent"
+                android:paddingTop="16dp"
+                android:paddingBottom="8dp"
+                android:text="Donation Statistics"
+                android:textColor="@color/button_bg"
+                android:textSize="20sp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cardPhone">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:id="@+id/labelMyCampaigns"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="See My Campaigns"
-                        android:layout_gravity="center"
-                        android:textSize="16sp"
-                        android:textColor="@color/button_bg"
-                        android:textStyle="bold" />
-
-                    <Button
-                        android:id="@+id/btnMyCampaigns"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="View Campaigns"
-                        android:layout_marginTop="8dp"
-                        android:backgroundTint="@color/button_bg"
-                        android:textColor="@color/text_color"/>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <!-- My Donations Card -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardMyDonations"
-                android:layout_width="250dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:cardElevation="4dp"
-                app:cardCornerRadius="8dp"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardPhone" />
+
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/donationChart"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cardMyCampaigns">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:id="@+id/labelMyDonations"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="My Donations"
-                        android:layout_gravity="center"
-                        android:textSize="16sp"
-                        android:textColor="@color/button_bg"
-                        android:textStyle="bold" />
-
-                    <Button
-                        android:id="@+id/btnMyDonations"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="View Donations"
-                        android:layout_marginTop="8dp"
-                        android:backgroundTint="@color/button_bg"
-                        android:textColor="@color/text_color"/>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/donationStatistics" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

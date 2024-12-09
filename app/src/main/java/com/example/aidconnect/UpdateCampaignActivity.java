@@ -1,9 +1,12 @@
 package com.example.aidconnect;
 
+import static android.content.ContentValues.TAG;
+
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -118,18 +121,23 @@ public class UpdateCampaignActivity extends BaseActivity {
                 .placeholder(R.drawable.sample)
                 .into(ivSelectedImage);
 
+        // Set Category Spinner selection
+        Log.d(TAG, "category: " + campaign.getCategory());
+        Log.d("Campaign Data", "Payment Methods: " + campaign.getPaymentMethods());
         int categoryPosition = ((ArrayAdapter<String>) spCategory.getAdapter()).getPosition(campaign.getCategory());
         spCategory.setSelection(categoryPosition);
 
-        // Set the selected payment method
+        // Set Payment Method Spinner selection
         if (!campaign.getPaymentMethods().isEmpty()) {
             String selectedMethod = campaign.getPaymentMethods().keySet().iterator().next();
             etDonationNumber.setText(campaign.getPaymentMethods().get(selectedMethod));
 
+            // Make sure payment methods are populated in the spinner before selecting the payment method
             int paymentMethodPosition = ((ArrayAdapter<String>) spDonationMedium.getAdapter()).getPosition(selectedMethod);
             spDonationMedium.setSelection(paymentMethodPosition);
         }
     }
+
 
 
     private void openFileChooser() {
@@ -164,6 +172,15 @@ public class UpdateCampaignActivity extends BaseActivity {
         String deadlineStr = etDeadline.getText().toString();
         int donationTarget = Integer.parseInt(etDonationTarget.getText().toString());
         Date deadline = parseDate(deadlineStr);
+
+        // Retrieve payment methods
+        String selectedPaymentMethod = spDonationMedium.getSelectedItem().toString();
+        String donationNumber = etDonationNumber.getText().toString();
+
+        // Ensure payment methods map is populated
+        if (!selectedPaymentMethod.isEmpty() && !donationNumber.isEmpty()) {
+            paymentMethods.put(selectedPaymentMethod, donationNumber);
+        }
 
         // Validate required fields
         if (title.isEmpty() || description.isEmpty() || deadlineStr.isEmpty() || imageUri == null) {

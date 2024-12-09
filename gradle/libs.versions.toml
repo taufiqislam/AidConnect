@@ -15,6 +15,7 @@ firebaseAuth = "23.0.0"
 firebaseFirestore = "25.1.0"
 firebaseInappmessaging = "21.0.0"
 firebaseStorage = "21.0.1"
+mpandroidchart = "v3.1.0"
 
 [libraries]
 aamarpay-android-library = { module = "com.github.aamarpay-dev:aamarPay-Android-Library", version.ref = "aamarpayAndroidLibrary" }
@@ -31,6 +32,7 @@ firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 firebase-inappmessaging = { group = "com.google.firebase", name = "firebase-inappmessaging", version.ref = "firebaseInappmessaging" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
+mpandroidchart = { group = "com.github.PhilJay", name = "MPAndroidChart", version.ref = "mpandroidchart" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
