@@ -31,18 +31,17 @@
                 android:layout_marginBottom="4dp"/>
 
             <TextView
-                android:id="@+id/campaignDeadline"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Deadline: X days left"
-                android:layout_marginBottom="4dp"/>
-
-            <TextView
                 android:id="@+id/campaignDonors"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Donors: XXX"
                 android:layout_marginBottom="8dp"/>
+            <TextView
+                android:id="@+id/campaignDeadline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Deadline: X days left"
+                android:layout_marginBottom="4dp"/>
 
             <Button
                 android:id="@+id/campaignActionButton"

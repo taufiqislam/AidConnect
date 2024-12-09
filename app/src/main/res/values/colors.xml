@@ -13,6 +13,7 @@
     <color name="color_button">#AB886D</color>
     <color name="text_color">#E4E0E1</color>
     <color name="search_color">#D6C0B3</color>
+    <color name="overlay_gray">#80000000</color>
     <!-- Add other colors as necessary -->
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>

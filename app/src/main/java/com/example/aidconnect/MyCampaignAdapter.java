@@ -1,5 +1,6 @@
 package com.example.aidconnect;
 
+import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -46,7 +47,7 @@ public class MyCampaignAdapter extends RecyclerView.Adapter<MyCampaignAdapter.My
         long daysLeft = getDaysLeft(deadline);
 
         holder.campaignTitle.setText(campaign.getTitle());
-        holder.campaignDeadline.setText("Deadline: " + daysLeft + " days left");
+
         holder.campaignDonors.setText("Donors: " + campaign.getDonorCount());
 
         Glide.with(context)
@@ -55,6 +56,14 @@ public class MyCampaignAdapter extends RecyclerView.Adapter<MyCampaignAdapter.My
                 .error(R.drawable.sample)
                 .into(holder.campaignImage);
 
+        if (daysLeft < 0) {
+            holder.endedIndicator.setVisibility(View.VISIBLE);
+            holder.campaignDeadline.setText("Campaign Ended");
+        } else {
+            holder.endedIndicator.setVisibility(View.GONE);
+            holder.campaignDeadline.setText("Deadline: " + daysLeft + " days left");
+        }
+
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, MyCampaignDetailsActivity.class);
             intent.putExtra("campaign", campaign);
@@ -62,6 +71,7 @@ public class MyCampaignAdapter extends RecyclerView.Adapter<MyCampaignAdapter.My
             context.startActivity(intent);
         });
     }
+
 
     private long getDaysLeft(Date deadline) {
         long diffInMillis = deadline.getTime() - new Date().getTime();
@@ -77,6 +87,7 @@ public class MyCampaignAdapter extends RecyclerView.Adapter<MyCampaignAdapter.My
         TextView campaignTitle, campaignDeadline, campaignDonors;
         Button campaignActionButton;
         ImageView campaignImage;
+        View endedIndicator;
 
         public MyCampaignViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -85,6 +96,8 @@ public class MyCampaignAdapter extends RecyclerView.Adapter<MyCampaignAdapter.My
             campaignDonors = itemView.findViewById(R.id.campaignDonors);
             campaignImage = itemView.findViewById(R.id.campaignImage);
             campaignActionButton = itemView.findViewById(R.id.campaignActionButton);
+            endedIndicator = itemView.findViewById(R.id.endedIndicator);
         }
     }
+
 }

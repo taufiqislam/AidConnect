@@ -100,7 +100,12 @@ public class MyCampaignDetailsActivity extends BaseActivity {
 
         tvCurrentDonation.setText("Donation: TK" + campaign.getCurrentDonation() + "\nDonation Goal: TK" + campaign.getDonationTarget());
         tvDonorCount.setText(campaign.getDonorCount() + "\nDonors");
-        tvDaysLeft.setText(getDaysLeft(campaign.getCampaignDeadline()) + "\nDays Left");
+        long daysLeft = getDaysLeft(campaign.getCampaignDeadline());
+        if (daysLeft < 0) {
+            tvDaysLeft.setText("Campaign\nEnded");
+        } else {
+            tvDaysLeft.setText(daysLeft + "\nDays Left");
+        }
     }
 
     private long getDaysLeft(Date deadline) {

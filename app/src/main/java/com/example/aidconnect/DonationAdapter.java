@@ -1,10 +1,12 @@
 package com.example.aidconnect;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -42,6 +44,8 @@ public class DonationAdapter extends RecyclerView.Adapter<DonationAdapter.Donati
         holder.donationAmount.setText("Amount: " + donation.getDonationAmount() + " BDT");
         holder.donationDate.setText("Date: " + donation.getDonationTime().toDate().toString());
         holder.transactionId.setText("Transaction ID: " + donation.getTransactionId().toString());
+
+        holder.itemView.setOnClickListener(v -> openCampaignDetails(donation.getCampaignId()));
     }
 
     private void fetchCampaignTitle(String campaignId, TextView campaignTitleTextView) {
@@ -74,5 +78,11 @@ public class DonationAdapter extends RecyclerView.Adapter<DonationAdapter.Donati
             donationDate = itemView.findViewById(R.id.tvDonationDate);
             transactionId = itemView.findViewById(R.id.tvTransactionId);
         }
+    }
+
+    private void openCampaignDetails(String campaignId) {
+        Intent intent = new Intent(context, CampaignDetailsActivity.class);
+        intent.putExtra("campaignId", campaignId);
+        context.startActivity(intent);
     }
 }

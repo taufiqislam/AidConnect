@@ -8,6 +8,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +59,7 @@ public class MyCampaignsActivity extends BaseActivity {
                             userCampaigns.add(campaign);
                             campaignIds.add(campaignId);
                         }
+                        userCampaigns.sort((c1, c2) -> c2.getCampaignDeadline().compareTo(c1.getCampaignDeadline()));
                         myCampaignAdapter = new MyCampaignAdapter(userCampaigns, campaignIds, this);
                         rvMyCampaigns.setAdapter(myCampaignAdapter);
                     } else {

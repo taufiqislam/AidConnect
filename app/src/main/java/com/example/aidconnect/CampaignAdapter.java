@@ -104,7 +104,6 @@ public class CampaignAdapter extends RecyclerView.Adapter<CampaignAdapter.Campai
                     if (!queryDocumentSnapshots.isEmpty()) {
                         String campaignId = queryDocumentSnapshots.getDocuments().get(0).getId();
                         Intent intent = new Intent(context, CampaignDetailsActivity.class);
-                        intent.putExtra("campaign", campaign);
                         intent.putExtra("campaignId", campaignId);
                         context.startActivity(intent);
                     } else {
